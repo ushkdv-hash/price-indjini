@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Дизайн{% endblock %}
+{% block content %}
+<div class="page-head design-page-head">
+  <div>
+    <h1>{{ data.title }}</h1>
+    <p class="muted design-subtitle">{{ data.subtitle }}</p>
+  </div>
+  <div class="design-source muted small">{{ data.source }} · {{ data.tariff }}</div>
+</div>
+
+<section class="design-rules card">
+  <h2>Условия тарифа «Стандарт»</h2>
+  <ul class="design-rules-list">
+    {% for rule in data.rules %}
+    <li>
+      {% if rule.label and rule.label not in ('а)', 'б)') %}
+      <strong>{{ rule.label }}:</strong>
+      {% endif %}
+      {{ rule.text }}
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+
+<section class="design-section">
+  <div class="design-toolbar">
+    <div class="field design-search-field">
+      <label for="design-search">Поиск по услуге</label>
+      <input type="search" id="design-search" placeholder="Визитка, листовка, календарь…" autocomplete="off">
+    </div>
+    <div class="design-categories" id="design-categories" role="tablist">
+      <button type="button" class="design-cat-btn active" data-category="all" role="tab">Все</button>
+      {% for cat in data.categories %}
+      <button type="button" class="design-cat-btn" data-category="{{ cat.id }}" role="tab">{{ cat.name }}</button>
+      {% endfor %}
+    </div>
+  </div>
+
+  <p class="muted small design-result-count" id="design-result-count"></p>
+
+  {% for cat in data.categories %}
+  <section class="design-category-block" data-category-block="{{ cat.id }}">
+    <h2 class="design-category-title">{{ cat.name }}</h2>
+    <div class="design-services">
+      {% for s in cat.services %}
+      <article class="design-service" data-search="{{ s.name | lower }} {{ s.note | default('', true) | lower }}">
+        <div class="design-service-main">
+          <span class="design-service-num">{{ s.id }}</span>
+          <div class="design-service-body">
+            <h3 class="design-service-name">{{ s.name }}</h3>
+            {% if s.note %}
+            <p class="design-service-note muted small">{{ s.note }}</p>
+            {% endif %}
+          </div>
+          <div class="design-service-side">
+            <div class="design-service-price">{{ s.price_rub | int }} ₽</div>
+            <div class="design-service-deadlines muted small">
+              {% if s.deadline_demo %}
+              <span>1-я демо: {{ s.deadline_demo }}</span>
+              {% endif %}
+              {% if s.deadline_ready %}
+              <span>Готово: {{ s.deadline_ready }}</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endfor %}
+
+  <p class="design-empty hidden muted" id="design-empty">Ничего не найдено — попробуйте другой запрос или категорию.</p>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='design.js') }}?v=2"></script>
+{% endblock %}

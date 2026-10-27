@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% from "_product_icon.html" import product_icon %}
+{% block title %}Калькулятор{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Калькулятор</h1>
+  <p class="muted">Выберите вид продукции для расчёта</p>
+</div>
+
+<div class="admin-tiles calc-picker">
+  {% for pid, prod in products %}
+  <a href="{{ url_for('calculator_product', product_id=pid) }}" class="tile">
+    {{ product_icon(prod.icon or pid) }}
+    <div><b>{{ prod.title }}</b><span>{{ prod.subtitle or 'Расчёт стоимости по параметрам заказа' }}</span></div>
+  </a>
+  {% else %}
+  {% if not calendar_hub %}
+  <div class="card"><p class="muted">Нет настроенных продуктов.</p></div>
+  {% endif %}
+  {% endfor %}
+  {% if calendar_hub %}
+  <a href="{{ url_for('calculator_calendars_hub') }}" class="tile">
+    {{ product_icon('kvartalnye_kalendari') }}
+    <div><b>Календари</b><span>Квартальные, перекидные, домики, карманные</span></div>
+  </a>
+  {% endif %}
+  {% if board_covers_product %}
+  <a href="{{ url_for('calculator_product', product_id='oblozhki_perepletnyi_karton') }}" class="tile">
+    {{ product_icon('oblozhki_karton') }}
+    <div><b>{{ board_covers_product.title }}</b><span>{{ board_covers_product.subtitle }}</span></div>
+  </a>
+  {% endif %}
+  {% if offset_hub %}
+  <a href="{{ url_for('calculator_offset_hub') }}" class="tile">
+    {{ product_icon('ofset') }}
+    <div><b>Офсет</b><span>Листовки, буклеты</span></div>
+  </a>
+  {% endif %}
+  {% if pvd_product %}
+  <a href="{{ url_for('calculator_product', product_id='pakety_pvd') }}" class="tile">
+    {{ product_icon('pakety_pvd') }}
+    <div><b>Пакеты ПВД</b><span>Пластиковые пакеты с вырубной ручкой</span></div>
+  </a>
+  {% endif %}
+  {% if paper_bags_product %}
+  <a href="{{ url_for('calculator_product', product_id=paper_bags_product_id) }}" class="tile">
+    {{ product_icon('bumazhnye_pakety') }}
+    <div><b>Бумажные пакеты</b><span>Пакеты с ламинацией, люверсами и шнурком</span></div>
+  </a>
+  {% endif %}
+  {% if wide_format_product %}
+  <a href="{{ url_for('calculator_product', product_id='shirokoformatnaya_pechat') }}" class="tile">
+    {{ product_icon('shirokoformatnaya_pechat') }}
+    <div><b>Широкоформатная печать</b><span>Баннеры, самоклейка, холсты</span></div>
+  </a>
+  {% endif %}
+</div>
+{% endblock %}

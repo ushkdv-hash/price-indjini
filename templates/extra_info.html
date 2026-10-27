@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}Дополнительная информация{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>{{ data.title }}</h1>
+    <p class="muted">{{ data.subtitle }}</p>
+  </div>
+</div>
+
+<section class="extra-section">
+  <div class="extra-section-head">
+    <h2>Дополнительные работы</h2>
+    <p class="muted">Тарифы из прайса — учитывайте при расчёте заказа с ручными операциями.</p>
+  </div>
+
+  <div class="extra-works-grid">
+    {% for w in data.extra_works %}
+    <article class="card extra-work-card">
+      <h3>{{ w.name }}</h3>
+      {% if w.description %}
+      <p class="muted small">{{ w.description }}</p>
+      {% endif %}
+      <ul class="extra-work-rates">
+        {% for rate in w.rates %}
+        <li>
+          <div class="extra-work-rate-label">
+            <span>{{ rate.label }}</span>
+            {% if rate.hint %}
+            <span class="muted small extra-work-rate-hint">{{ rate.hint }}</span>
+            {% endif %}
+          </div>
+          <strong>{{ rate.price }}</strong>
+        </li>
+        {% endfor %}
+      </ul>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="extra-section">
+  <div class="extra-section-head">
+    <h2>Раскладка изделий на листе</h2>
+    <p class="muted">Введите размер изделия — калькулятор покажет, сколько штук помещается на лист (учитывается поворот). Схема в масштабе: видно ориентацию макетов и незапечатанную часть листа.</p>
+  </div>
+
+  <div class="sheet-layout-grid">
+    {% for p in data.presets %}
+    <article class="card sheet-layout-card" data-sheet-layout
+      {% if p.custom_sheet %}data-custom-sheet="1"{% endif %}
+      data-sheet-w="{{ p.sheet_w }}"
+      data-sheet-h="{{ p.sheet_h }}"
+      data-margin-top="{{ p.margin_top }}"
+      data-margin-bottom="{{ p.margin_bottom }}"
+      data-margin-left="{{ p.margin_left }}"
+      data-margin-right="{{ p.margin_right }}">
+      <div class="sheet-layout-top">
+        <div>
+          <h3>{{ p.name }}</h3>
+          <p class="muted small">{{ p.description }}</p>
+        </div>
+        <div class="sheet-layout-result">
+          <div class="sheet-layout-count" data-result-count>—</div>
+          <div class="muted small" data-result-detail></div>
+        </div>
+      </div>
+
+      {% if p.custom_sheet %}
+      <div class="field-row sheet-layout-fields">
+        <div class="field">
+          <label>Ширина листа, мм</label>
+          <input type="number" min="1" step="1" data-field="sheet_w" value="{{ p.sheet_w }}">
+        </div>
+        <div class="field">
+          <label>Высота листа, мм</label>
+          <input type="number" min="1" step="1" data-field="sheet_h" value="{{ p.sheet_h }}">
+        </div>
+      </div>
+      <div class="sheet-layout-meta muted small">
+        Поля В{{ p.margin_top }} / Н{{ p.margin_bottom }} / Л{{ p.margin_left }} / П{{ p.margin_right }} мм
+      </div>
+      {% else %}
+      <div class="sheet-layout-meta muted small">
+        Лист {{ p.sheet_w }}×{{ p.sheet_h }} мм ·
+        поля В{{ p.margin_top }} / Н{{ p.margin_bottom }} / Л{{ p.margin_left }} / П{{ p.margin_right }} мм
+      </div>
+      {% endif %}
+
+      <div class="field-row sheet-layout-fields">
+        <div class="field">
+          <label>Ширина изделия, мм</label>
+          <input type="number" min="1" step="1" data-field="item_w" value="{{ p.default_item_w }}">
+        </div>
+        <div class="field">
+          <label>Высота изделия, мм</label>
+          <input type="number" min="1" step="1" data-field="item_h" value="{{ p.default_item_h }}">
+        </div>
+        <div class="field">
+          <label>Поля под обрезку, мм</label>
+          <input type="number" min="0" step="1" data-field="cut_margin" value="{{ p.default_cut_margin }}">
+        </div>
+      </div>
+
+      <div class="sheet-canvas-wrap">
+        <div class="sheet-canvas" data-preview aria-hidden="true"></div>
+        <div class="sheet-canvas-legend muted small">
+          <span class="sheet-legend-item sheet-legend-margin">полезная зона</span>
+          <span class="sheet-legend-item sheet-legend-item-box">макет</span>
+          <span class="sheet-legend-item sheet-legend-unused">незапечатано</span>
+        </div>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='sheet-layout.js') }}?v=3"></script>
+{% endblock %}

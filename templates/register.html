@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Регистрация{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-logo">▣</div>
+    <h1>Регистрация</h1>
+    <p class="muted small center">После отправки заявки администратор проверит данные и назначит роль. Вход станет доступен после одобрения.</p>
+    <form method="post" class="auth-form">
+      <label>ФИО / имя
+        <input type="text" name="full_name" placeholder="Иван Иванов">
+      </label>
+      <label>Логин
+        <input type="text" name="username" required>
+      </label>
+      <label>Пароль
+        <input type="password" name="password" required>
+      </label>
+      <label>Повторите пароль
+        <input type="password" name="password2" required>
+      </label>
+      <button type="submit" class="btn-primary">Отправить заявку</button>
+    </form>
+    <p class="muted center">Уже есть аккаунт? <a href="{{ url_for('login') }}">Войти</a></p>
+  </div>
+</div>
+{% endblock %}

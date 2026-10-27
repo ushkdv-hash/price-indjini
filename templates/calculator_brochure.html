@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% from "_discount_field.html" import discount_field %}
+{% block title %}Калькулятор · {{ product.title }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Расчёт стоимости · <span class="accent">{{ product.title }}</span></h1>
+    {% if show_admin_details %}
+    <p class="muted">Страницы × цена за стр. по тиражу + переплёт × {{ product.brochure_binding_factor | default(1.6) }} + опции − скидка</p>
+    {% else %}
+    <p class="muted">Цена за штуку и итог за тираж с учётом обложки, блока, переплёта и опций</p>
+    {% endif %}
+  </div>
+  <a href="{{ url_for('calculator') }}" class="btn-ghost">← Все калькуляторы</a>
+</div>
+
+<div class="calc-grid">
+  <section class="card form-card">
+    <h2>Параметры заказа</h2>
+    <div id="calc-form" class="calc-form">
+      <div class="field-row">
+        <div class="field">
+          <label>Переплёт</label>
+          <select id="f-binding">
+            {% for b in product.binding_types %}
+            <option value="{{ b.id }}">{{ b.label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="field">
+          <label>Ориентация</label>
+          <select id="f-orientation">
+            {% for o in product.orientations %}
+            <option value="{{ o.id }}">{{ o.label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Крепление</label>
+          <select id="f-binding-position">
+            {% for bp in product.binding_positions %}
+            <option value="{{ bp.id }}">{{ bp.label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="field">
+          <label>Размер</label>
+          <select id="f-size"></select>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Страниц всего (с обложкой)</label>
+          <input type="number" id="f-page-count" min="{{ product.min_page_count }}" max="{{ product.max_page_count }}" step="1" value="{{ product.default_page_count }}">
+        </div>
+        <div class="field">
+          <label>Тираж, шт</label>
+          <select id="f-qty"></select>
+        </div>
+      </div>
+      <p id="page-split-note" class="muted small brochure-section-note"></p>
+
+      <h3 class="brochure-form-subhead">Обложка и блок</h3>
+
+      <fieldset class="brochure-section" id="section-cover">
+        <legend>Обложка</legend>
+        <div class="field-row">
+          <div class="field">
+            <label>Материал</label>
+            <select id="f-cover-material"></select>
+          </div>
+          <div class="field">
+            <label>Печать</label>
+            <select id="f-cover-print">
+              {% for pm in product.print_modes %}
+              <option value="{{ pm }}">{{ pm }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="field" id="field-cover-lamination">
+          <label>{{ product.finish_select_label or 'Ламинация' }}</label>
+          <select id="f-cover-lamination"></select>
+        </div>
+        <div class="field" id="field-cover-options">
+          <label>Доп. опции</label>
+          <div id="f-cover-options" class="options-grid"></div>
+        </div>
+      </fieldset>
+
+      <fieldset class="brochure-section" id="section-pages">
+        <legend>Страницы</legend>
+        <div class="field-row">
+          <div class="field">
+            <label>Материал</label>
+            <select id="f-pages-material"></select>
+          </div>
+          <div class="field">
+            <label>Печать</label>
+            <select id="f-pages-print">
+              {% for pm in product.print_modes %}
+              <option value="{{ pm }}">{{ pm }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="field" id="field-pages-lamination">
+          <label>{{ product.finish_select_label or 'Ламинация' }}</label>
+          <select id="f-pages-lamination"></select>
+        </div>
+        <div class="field" id="field-pages-options">
+          <label>Доп. опции</label>
+          <div id="f-pages-options" class="options-grid"></div>
+        </div>
+      </fieldset>
+
+      <div class="field" id="field-product-options">
+        <label>Опции изделия</label>
+        <div id="f-product-options" class="options-grid"></div>
+      </div>
+
+      {{ discount_field(product) }}
+    </div>
+  </section>
+
+  <section class="card result-card">
+    <div class="result-head">
+      <h2>Результат</h2>
+      <button id="copy-btn" class="btn-ghost" type="button" disabled>Скопировать</button>
+    </div>
+    <div id="result-empty" class="result-empty muted">
+      Выберите параметры — расчёт обновится автоматически.
+    </div>
+    <div id="result" class="result hidden"></div>
+    <div id="result-actions" class="result-actions hidden">
+      <button id="save-btn" class="btn-primary" type="button" disabled>Сохранить расчёт</button>
+    </div>
+  </section>
+</div>
+
+<div id="save-modal" class="modal hidden" role="dialog" aria-labelledby="save-modal-title">
+  <div class="modal-backdrop" data-close-modal></div>
+  <div class="modal-box card">
+    <h2 id="save-modal-title">Сохранить расчёт</h2>
+    <p class="muted small">Укажите название — так просчёт будет найден в истории.</p>
+    <div class="field">
+      <label for="save-title">Название</label>
+      <input type="text" id="save-title" maxlength="120" placeholder="Например: Меню А4 на пружине">
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn-ghost" data-close-modal>Отмена</button>
+      <button type="button" id="save-confirm-btn" class="btn-primary">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<script id="product-data" type="application/json">{{ product | tojson }}</script>
+<script id="opts-by-size" type="application/json">{{ opts_by_size | tojson }}</script>
+<script id="calc-meta" type="application/json">{{ {"show_admin_details": show_admin_details, "product_id": product_id, "option_kinds": option_kinds | default({})} | tojson }}</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='discount-field.js') }}"></script>
+<script src="{{ url_for('static', filename='calc-result.js') }}?v=4"></script>
+<script src="{{ url_for('static', filename='brochure-calculator.js') }}?v=3"></script>
+{% endblock %}

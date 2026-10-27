@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Сброс пароля · {{ username }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Восстановление пароля: <span class="accent">{{ username }}</span></h1>
+  <a href="{{ url_for('admin') }}" class="btn-ghost">← Админка</a>
+</div>
+
+<section class="card">
+  <p class="muted small">
+    Ссылка и код действуют <b>24 часа</b> и только <b>один раз</b>. Передайте их пользователю
+    любым удобным способом (мессенджер, телефон). Восстановление выполнит сам пользователь —
+    он задаст новый пароль на странице входа.
+  </p>
+  <div class="field">
+    <label>Ссылка для пользователя</label>
+    <input type="text" value="{{ link }}" readonly onclick="this.select()">
+  </div>
+  <div class="field">
+    <label>Код (если удобнее передать код, а не ссылку)</label>
+    <input type="text" value="{{ token }}" readonly onclick="this.select()">
+  </div>
+  <form method="post" action="{{ url_for('admin_user_reset_password', uname=username) }}" class="row-form"
+        onsubmit="return confirm('Выпустить новый код для {{ username }}? Старый код станет недействительным.')">
+    <button type="submit" class="btn-ghost small">Выпустить новый код</button>
+  </form>
+</section>
+{% endblock %}

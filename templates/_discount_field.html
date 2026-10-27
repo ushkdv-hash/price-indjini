@@ -1,0 +1,28 @@
+{% macro discount_field(product) %}
+{% set ui = product.discount_ui %}
+<div class="field discount-field" data-discount-max="{{ ui.max_percent }}" data-discount-custom-only="{{ '1' if ui.custom_only else '0' }}">
+  <label>Скидка клиента</label>
+  {% if ui.custom_only %}
+  <select id="f-discount" class="hidden" aria-hidden="true">
+    <option value="__custom__" selected>Установить скидку</option>
+  </select>
+  <div id="discount-custom-wrap">
+    <label for="f-discount-custom" class="muted small">Установить скидку, %</label>
+    <input type="number" id="f-discount-custom" min="0" max="{{ ui.max_percent }}" step="0.1" value="0">
+    <p class="muted small">Максимум {{ ui.max_percent }}%</p>
+  </div>
+  {% else %}
+  <select id="f-discount">
+    {% for d in ui.presets %}
+    <option value="{{ d.percent }}">{{ d.name }}{% if d.percent %} (−{{ d.percent }}%){% endif %}</option>
+    {% endfor %}
+    <option value="__custom__">Установить скидку</option>
+  </select>
+  <div id="discount-custom-wrap" class="hidden">
+    <label for="f-discount-custom" class="muted small">Скидка, %</label>
+    <input type="number" id="f-discount-custom" min="0" max="{{ ui.max_percent }}" step="0.1" value="0">
+    <p class="muted small">Не более {{ ui.max_percent }}%</p>
+  </div>
+  {% endif %}
+</div>
+{% endmacro %}

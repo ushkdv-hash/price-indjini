@@ -1,0 +1,117 @@
+{
+  "print_a3": {
+    "name": "Печать (Коника), А3",
+    "norm_per_min": 15.0,
+    "cost": 0.488889
+  },
+  "cut_item": {
+    "name": "Автоматическая резка, шт",
+    "norm_per_min": 30.0,
+    "cost": 0.244444
+  },
+  "lam_pack": {
+    "name": "Пакетная ламинация, лист А3",
+    "norm_per_min": 1.0,
+    "cost": 7.333333
+  },
+  "lam_roll": {
+    "name": "Рулонная ламинация, лист А3",
+    "norm_per_min": 1.5,
+    "cost": 4.888889
+  },
+  "corner": {
+    "name": "Скругление углов (за 1 угол)",
+    "norm_per_min": 60.0,
+    "cost": 0.122222
+  },
+  "bigovka": {
+    "name": "Биговка, шт",
+    "norm_per_min": 11.0,
+    "cost": 0.666667
+  },
+  "badge_hole": {
+    "name": "Круглое/овальное отверстие для ленты",
+    "norm_per_min": 11.0,
+    "cost": 0.666667
+  },
+  "badge_lanyard_carabiner": {
+    "name": "Лента для бейджа (карабин), шт",
+    "norm_per_min": 1.0,
+    "cost": 40.625
+  },
+  "badge_lanyard_clip": {
+    "name": "Лента для бейджа (клипса), шт",
+    "norm_per_min": 1.0,
+    "cost": 40.625
+  },
+  "poly_eyelet": {
+    "name": "Люверс (полиграфия), шт",
+    "norm_per_min": 1.0,
+    "cost": 0.96
+  },
+  "poly_eyelet_install": {
+    "name": "Установка люверса (полиграфия), шт",
+    "norm_per_min": 11.0,
+    "cost": 0.666667
+  },
+  "plotter_mag_extra": {
+    "name": "Работа плоттера (магнит), лист А3",
+    "norm_per_min": 2.0,
+    "cost": 3.666667
+  },
+  "coil_install": {
+    "name": "Установка пружины, шт",
+    "norm_per_min": 1.5,
+    "cost": 4.888889
+  },
+  "spiral_punch": {
+    "name": "Перфорация под пружину, стр",
+    "norm_per_min": 60.0,
+    "cost": 0.122222
+  },
+  "spiral_cut": {
+    "name": "Резка пружины на бобине",
+    "norm_per_min": 4.0,
+    "cost": 1.833333
+  },
+  "block_layout": {
+    "name": "Раскладка, счёт блоков",
+    "norm_per_min": 60.0,
+    "cost": 0.122222
+  },
+  "plotter_cut_sheet": {
+    "name": "Плоттерная резка",
+    "norm_per_min": 1.0,
+    "cost": 7.333333
+  },
+  "cup_sticker_paste": {
+    "name": "Поклейка наклеек на стаканчики",
+    "norm_per_min": 6.0,
+    "cost": 1.222222
+  },
+  "quarterly_tape_paste": {
+    "name": "Одевание курсора",
+    "norm_per_min": 2.0,
+    "cost": 3.666667
+  },
+  "sublimation_mug_make": {
+    "name": "Изготовление кружки",
+    "norm_per_min": 0.2,
+    "cost": 36.666667
+  },
+  "sublimation_plate_make": {
+    "name": "Изготовление тарелки",
+    "norm_per_min": 0.08,
+    "cost": 91.666667
+  },
+  "sublimation_tape_glue": {
+    "name": "Склейка на двусторонний скотч",
+    "norm_per_min": 2.0,
+    "cost": 3.666667
+  },
+  "envelope_print": {
+    "name": "Распечатка, копирование",
+    "norm_per_min": 5.0,
+    "cost": 1.466667
+  }
+}

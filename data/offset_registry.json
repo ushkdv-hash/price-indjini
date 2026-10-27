@@ -1,0 +1,65 @@
+{
+  "reference_date": "2026-07-22",
+  "catalog": [
+    {
+      "id": "vizitki_ofset",
+      "title": "Визитки",
+      "tab": "Визитки",
+      "status": "disabled"
+    },
+    {
+      "id": "listovki_ofset",
+      "title": "Листовки и плакаты",
+      "tab": "Листовки и плакаты",
+      "status": "disabled"
+    },
+    {
+      "id": "listovki_omega",
+      "title": "Листовки",
+      "tab": "Листовки",
+      "status": "active"
+    },
+    {
+      "id": "buklety_liflety_ofset",
+      "title": "Буклеты и лифлеты",
+      "tab": "Буклеты и лифлеты",
+      "status": "disabled"
+    },
+    {
+      "id": "buklety_omega",
+      "title": "Буклеты",
+      "tab": "Буклеты",
+      "status": "active"
+    },
+    {
+      "id": "papki_0204_ofset",
+      "title": "Папки №0204",
+      "tab": "Папки",
+      "status": "disabled"
+    },
+    {
+      "id": "papki_145_ofset",
+      "title": "Папка №145",
+      "tab": "Папки",
+      "status": "disabled"
+    },
+    {
+      "id": "papki_835_ofset",
+      "title": "Папка №835",
+      "tab": "Папки",
+      "status": "disabled"
+    },
+    {
+      "id": "bumazhnye_pakety",
+      "title": "Бумажные пакеты (прайс Сборка)",
+      "tab": "Бумажные пакеты",
+      "status": "disabled"
+    },
+    {
+      "id": "bumazhnye_pakety_omega",
+      "title": "Бумажные пакеты",
+      "tab": "Бумажные пакеты",
+      "status": "active"
+    }
+  ]
+}

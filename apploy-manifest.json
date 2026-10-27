@@ -1,0 +1,9 @@
+{
+  "app": "auto-price",
+  "repo_url": "https://github.com/USERNAME/auto-price.git",
+  "branch": "main",
+  "subdir": ".",
+  "compose_file": "docker-compose.yml",
+  "health_url": "http://127.0.0.1:8080/login",
+  "health_timeout": 10.0
+}

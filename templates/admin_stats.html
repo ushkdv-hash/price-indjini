@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Статистика пользователей{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Статистика пользователей</h1>
+    <p class="muted">Входы в систему, все просчёты в калькуляторе и сохранённые расчёты</p>
+  </div>
+  <a href="{{ url_for('admin') }}" class="btn-ghost">← Админка</a>
+</div>
+
+<section class="card">
+  <h2>Сводка</h2>
+  <p class="muted small">
+    Входов: <b>{{ totals.logins }}</b> ·
+    просчётов в калькуляторе: <b>{{ totals.calcs }}</b> ·
+    сохранено в историю: <b>{{ totals.saved }}</b>
+  </p>
+  <p class="muted small">«Сохранено» считается из текущей истории (до 200 записей на всё приложение). Счётчики входов и просчётов накапливаются с момента включения статистики.</p>
+</section>
+
+<section class="card">
+  <h2>По сотрудникам</h2>
+  {% if stats_rows %}
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Логин</th>
+        <th>Имя</th>
+        <th>Роль</th>
+        <th>Последний вход</th>
+        <th>Входов</th>
+        <th>Последний просчёт</th>
+        <th>Просчётов</th>
+        <th>Сохранено</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in stats_rows %}
+      <tr>
+        <td>{{ r.username }}</td>
+        <td>{{ r.full_name }}</td>
+        <td>{{ 'админ' if r.role == 'admin' else 'сотрудник' }}</td>
+        <td class="nowrap muted small">{{ (r.last_login or '—').replace('T', ' ') }}</td>
+        <td>{{ r.login_count }}</td>
+        <td class="nowrap muted small">{{ (r.last_calc or '—').replace('T', ' ') }}</td>
+        <td>{{ r.calc_count }}</td>
+        <td>{{ r.saved_count }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted">Нет одобренных пользователей.</p>
+  {% endif %}
+</section>
+
+<section class="card">
+  <h2>Недавние входы</h2>
+  {% if recent_logins %}
+  <table class="data-table">
+    <thead><tr><th>Когда</th><th>Пользователь</th></tr></thead>
+    <tbody>
+      {% for e in recent_logins %}
+      <tr>
+        <td class="nowrap">{{ e.when.replace('T', ' ') }}</td>
+        <td>{{ e.user }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted">Входы ещё не записывались.</p>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,81 @@
+{
+  "lamination": {
+    "label": "Ламинация",
+    "ui": "select",
+    "formula": "lamination",
+    "builtin": true
+  },
+  "corner": {
+    "label": "Скругление углов",
+    "ui": "checkbox",
+    "formula": "corner",
+    "builtin": true
+  },
+  "foil": {
+    "label": "Фольгирование",
+    "ui": "checkbox",
+    "formula": "foil",
+    "builtin": true
+  },
+  "crease": {
+    "label": "Биговка",
+    "ui": "count",
+    "formula": "crease",
+    "builtin": true
+  },
+  "ribbon_hole": {
+    "label": "Отверстие для ленты",
+    "ui": "checkbox",
+    "formula": "work_unit",
+    "builtin": true
+  },
+  "eyelet": {
+    "label": "Люверсы",
+    "ui": "checkbox",
+    "formula": "eyelet",
+    "builtin": true
+  },
+  "corner_cut": {
+    "label": "Срез углов",
+    "ui": "checkbox",
+    "formula": "corner_cut",
+    "builtin": true
+  },
+  "notebook_board": {
+    "label": "Переплётный картон",
+    "ui": "count",
+    "formula": "fixed",
+    "builtin": true
+  },
+  "quarterly_top": {
+    "label": "Ламинация топа",
+    "ui": "select",
+    "formula": "fixed",
+    "builtin": true
+  },
+  "quarterly_addon": {
+    "label": "Дополнение",
+    "ui": "checkbox",
+    "formula": "fixed",
+    "builtin": true
+  },
+  "cup_accessory": {
+    "label": "Аксессуар для стаканов",
+    "ui": "checkbox",
+    "formula": "fixed",
+    "builtin": true
+  },
+  "extra_layout": {
+    "label": "Доп. макеты в тираже",
+    "ui": "count",
+    "formula": "fixed_per_item",
+    "billing": "order",
+    "builtin": true
+  },
+  "board_mount": {
+    "label": "Крепление обложки",
+    "ui": "count",
+    "formula": "fixed",
+    "builtin": true
+  }
+}

@@ -1,0 +1,351 @@
+{% extends "base.html" %}
+{% block title %}Доп. опции{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Доп. опции</h1>
+  <a href="{{ url_for('admin') }}" class="btn-ghost">← Назад в админку</a>
+</div>
+
+<form method="post" class="card">
+  <p class="muted small">
+    Опции считаются по формуле: для ламинаций — <b>(плёнка за лист + работа ламинации) ÷ изделий&nbsp;на&nbsp;листе</b>,
+    далее ×price_factor (1.6 для 30 мкм и софт-тач, 1.86 для 60 мкм и выше). Скругление — <b>работа × 4 угла</b>. Фольгирование — по составной формуле (×1.3, затем ×1.6).
+    Здесь задаются <b>стоимости за лист А3</b>; нормативы работ — в разделе «Виды работ»,
+    печать Коника — в «Материалы и печать».
+  </p>
+
+  <h2>Плёнки и материалы опций (цена за лист А3)</h2>
+  <table class="data-table">
+    <thead><tr><th>Материал</th><th>Цена за А3, ₽</th></tr></thead>
+    <tbody>
+      {% for key, film in films.items() %}
+      <tr>
+        <td>{{ film.name }}</td>
+        <td><input type="number" step="0.01" name="film_{{ key }}" value="{{ film.a3 }}"></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <button type="submit" class="btn-primary">Сохранить цены плёнок</button>
+</form>
+
+<form method="post" class="card add-block">
+  <input type="hidden" name="action" value="add_film">
+  <h2>Добавить плёнку / материал опции</h2>
+  <div class="add-form-grid">
+    <div class="field">
+      <label for="new_film_name">Название</label>
+      <input type="text" id="new_film_name" name="new_film_name" maxlength="120" required placeholder="Плёнка матовая 40 мкм">
+    </div>
+    <div class="field">
+      <label for="new_film_price">Цена за А3, ₽</label>
+      <input type="number" id="new_film_price" name="new_film_price" step="0.01" min="0" required>
+    </div>
+  </div>
+  <button type="submit" class="btn-primary">Добавить плёнку</button>
+</form>
+
+{% if plotter_laminations %}
+<section class="card">
+  <h2>Ламинация стикеров под плоттер</h2>
+  <p class="muted small">
+    Пункты выпадающего списка в калькуляторе плоттера. Цены плёнок — из таблицы выше, работы — из «Виды работ».
+    Себестоимость: <b>плёнка за А3 + работа ламинации</b> на каждый лист, затем ÷ раскладку.
+  </p>
+
+  {% for pl in plotter_laminations %}
+  <h3>{{ pl.title }}</h3>
+  <table class="data-table">
+    <thead><tr><th>Название в калькуляторе</th><th>Плёнка</th><th>Работа</th><th></th></tr></thead>
+    <tbody>
+      {% for lam in pl.laminations %}
+      <tr>
+        <td>{{ lam.name }}</td>
+        <td>{{ lam.film_label | default('—') }}</td>
+        <td>{{ lam.work_label | default('—') }}</td>
+        <td>
+          {% if lam.removable %}
+          <form method="post" style="display:inline" onsubmit="return confirm('Удалить «{{ lam.name }}»?');">
+            <input type="hidden" name="action" value="remove_plotter_lam">
+            <input type="hidden" name="pl_product" value="{{ pl.id }}">
+            <input type="hidden" name="pl_name" value="{{ lam.name }}">
+            <button type="submit" class="btn-ghost">Удалить</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endfor %}
+
+  <form method="post" class="add-block" style="margin-top:16px">
+    <input type="hidden" name="action" value="add_plotter_lam">
+    <h3>Добавить вид ламинации</h3>
+    <div class="add-form-grid">
+      <div class="field">
+        <label for="pl_product">Продукт</label>
+        <select id="pl_product" name="pl_product">
+          {% for pl in plotter_laminations %}
+          <option value="{{ pl.id }}">{{ pl.title }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label for="pl_name">Название в калькуляторе</label>
+        <input type="text" id="pl_name" name="pl_name" maxlength="80" required placeholder="Глянцевая 40 мкм">
+      </div>
+      <div class="field">
+        <label for="pl_film">Плёнка</label>
+        <select id="pl_film" name="pl_film" required>
+          <option value="">—</option>
+          {% for key, film in films.items() %}
+          <option value="{{ key }}">{{ film.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label for="pl_work">Вид работы</label>
+        <select id="pl_work" name="pl_work" required>
+          <option value="">—</option>
+          {% for key, w in works.items() %}
+          <option value="{{ key }}">{{ w.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <button type="submit" class="btn-primary">Добавить ламинацию</button>
+  </form>
+</section>
+{% endif %}
+
+<form method="post" class="card add-block">
+  <input type="hidden" name="action" value="add_kind">
+  <h2>Добавить тип опции</h2>
+  <p class="muted small">
+    Тип задаёт <b>формулу расчёта</b> и <b>место в калькуляторе</b>.
+    «Выпадающий список» — как ламинация (один выбор из группы).
+    «Галочки» — как скругление или фольга (можно несколько).
+  </p>
+  <div class="add-form-grid">
+    <div class="field">
+      <label for="kind_label">Название типа</label>
+      <input type="text" id="kind_label" name="kind_label" maxlength="80" required placeholder="УФ-лак">
+    </div>
+    <div class="field">
+      <label for="kind_ui">В калькуляторе</label>
+      <select id="kind_ui" name="kind_ui" required>
+        <option value="checkbox">Галочки (доп. опции)</option>
+        <option value="select">Выпадающий список</option>
+        <option value="count">Количество (число)</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="kind_formula">Формула</label>
+      <select id="kind_formula" name="kind_formula" required>
+        <option value="lamination">(плёнка + работа) ÷ изделий на листе</option>
+        <option value="corner">работа × количество углов</option>
+        <option value="crease">биговка: работа × 2 × количество линий</option>
+        <option value="work_unit">работа × количество (без деления на лист)</option>
+        <option value="foil">фольгирование (составная)</option>
+        <option value="fixed">фиксированная прибавка, ₽</option>
+      </select>
+    </div>
+  </div>
+  <button type="submit" class="btn-primary">Добавить тип</button>
+</form>
+
+{% if option_kinds %}
+<section class="card">
+  <h2>Типы опций</h2>
+  <table class="data-table">
+    <thead><tr><th>Ключ</th><th>Название</th><th>В калькуляторе</th><th>Формула</th></tr></thead>
+    <tbody>
+      {% for key, spec in option_kinds.items() %}
+      <tr>
+        <td><code>{{ key }}</code></td>
+        <td>{{ spec.label }}</td>
+        <td>{% if spec.ui == 'select' %}Выпадающий список{% elif spec.ui == 'count' %}Количество{% else %}Галочки{% endif %}</td>
+        <td>{{ spec.formula }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
+
+<form method="post" class="card add-block" id="add-option-form">
+  <input type="hidden" name="action" value="add_option">
+  <h2>Добавить доп. опцию в калькулятор</h2>
+  <p class="muted small">Новая опция попадёт в выбранные продукты (визитки, листовки). Ламинацию плоттера настраивайте в блоке выше.</p>
+
+  <div class="add-form-grid">
+    <div class="field">
+      <label for="opt_name">Название в калькуляторе</label>
+      <input type="text" id="opt_name" name="opt_name" maxlength="80" required placeholder="Глянцевая 40 мкм">
+    </div>
+    <div class="field">
+      <label for="opt_kind">Тип опции</label>
+      <select id="opt_kind" name="opt_kind" required>
+        {% for key, spec in option_kinds.items() %}
+        <option value="{{ key }}" data-formula="{{ spec.formula }}" data-ui="{{ spec.ui }}">{{ spec.label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label for="opt_price_factor">Множитель цены</label>
+      <input type="number" id="opt_price_factor" name="opt_price_factor" step="0.01" value="1.6" min="0.01">
+    </div>
+    <div class="field opt-field-fixed hidden">
+      <label for="opt_cost_add">Прибавка к себестоимости, ₽</label>
+      <input type="number" id="opt_cost_add" name="opt_cost_add" step="0.01" min="0">
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Продукты</label>
+    <div class="checkbox-row">
+      {% for pid, prod in products.items() %}
+      {% if prod.get('options') is not none %}
+      <label class="opt-item">
+        <input type="checkbox" name="opt_product" value="{{ pid }}" checked>
+        <span>{{ prod.title }}</span>
+      </label>
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="add-form-grid opt-fields-formula">
+    <div class="field">
+      <label for="opt_film">Плёнка (ламин. / софт-тач)</label>
+      <select id="opt_film" name="opt_film">
+        <option value="">—</option>
+        {% for key, film in films.items() %}
+        <option value="{{ key }}">{{ film.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label for="opt_foil">Фольга (только фольгирование)</label>
+      <select id="opt_foil" name="opt_foil">
+        {% for key, film in films.items() %}
+        <option value="{{ key }}"{% if key == 'foil' %} selected{% endif %}>{{ film.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label for="opt_work">Вид работы</label>
+      <select id="opt_work" name="opt_work">
+        <option value="">—</option>
+        {% for key, w in works.items() %}
+        <option value="{{ key }}">{{ w.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field" id="opt_count_field">
+      <label for="opt_count" id="opt_count_label">Углов (скругление)</label>
+      <input type="number" id="opt_count" name="opt_count" value="4" min="1" max="8">
+    </div>
+    <div class="field hidden" id="opt_count_min_field">
+      <label for="opt_count_min">Минимум</label>
+      <input type="number" id="opt_count_min" name="opt_count_min" value="0" min="0" max="10">
+    </div>
+    <div class="field hidden" id="opt_count_max_field">
+      <label for="opt_count_max">Максимум</label>
+      <input type="number" id="opt_count_max" name="opt_count_max" value="10" min="1" max="20">
+    </div>
+    <div class="field">
+      <label for="opt_print_sides">Стороны печати (фольга)</label>
+      <select id="opt_print_sides" name="opt_print_sides">
+        <option value="1">1+0</option>
+        <option value="2">1+1</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="opt_surcharge">Надбавка фольги ×</label>
+      <input type="number" id="opt_surcharge" name="opt_surcharge" step="0.01" value="1.3" min="1">
+    </div>
+  </div>
+  <button type="submit" class="btn-primary">Добавить опцию</button>
+</form>
+
+<script>
+(function () {
+  const kindSel = document.getElementById("opt_kind");
+  const fixedBox = document.querySelector(".opt-field-fixed");
+  const formulaGrid = document.querySelector(".opt-fields-formula");
+  const countField = document.getElementById("opt_count_field");
+  const countMinField = document.getElementById("opt_count_min_field");
+  const countMaxField = document.getElementById("opt_count_max_field");
+  const countInput = document.getElementById("opt_count");
+  const countLabel = document.getElementById("opt_count_label");
+  function syncFields() {
+    const opt = kindSel.selectedOptions[0];
+    const formula = opt?.dataset.formula || "";
+    const ui = opt?.dataset.ui || "";
+    fixedBox.classList.toggle("hidden", formula !== "fixed");
+    formulaGrid.classList.toggle("hidden", formula === "fixed");
+    const isCount = ui === "count" || formula === "crease";
+    const isCorner = formula === "corner";
+    const isWorkUnit = formula === "work_unit";
+    countField.classList.toggle("hidden", formula !== "corner" && formula !== "crease" && !isWorkUnit);
+    countMinField.classList.toggle("hidden", !isCount);
+    countMaxField.classList.toggle("hidden", !isCount);
+    if (isCount) {
+      countLabel.textContent = "Количество по умолчанию";
+      countInput.min = "0";
+      countInput.max = "10";
+      if (countInput.value === "4") countInput.value = "0";
+    } else if (isWorkUnit) {
+      countLabel.textContent = "Количество";
+      countInput.min = "1";
+      countInput.max = "10";
+      if (countInput.value === "4" || countInput.value === "0") countInput.value = "1";
+    } else if (isCorner) {
+      countLabel.textContent = "Углов (скругление)";
+      countInput.min = "1";
+      countInput.max = "8";
+      if (countInput.value === "1") countInput.value = "4";
+    }
+  }
+  kindSel.addEventListener("change", syncFields);
+  syncFields();
+})();
+</script>
+
+{% if preview_products %}
+<section class="preview-section">
+  <h2>Предпросмотр прибавок</h2>
+  <p class="muted small">Раскройте нужный вид продукции, чтобы увидеть прибавки по размерам.</p>
+
+  {% for p in preview_products %}
+  <details class="card preview-panel">
+    <summary class="preview-summary">{{ p.title }}</summary>
+    <div class="preview-body">
+      {% for size in p.sizes %}
+      <div class="preview-size">
+        <h3>{{ size.name }}</h3>
+        {% if size.per_sheet %}
+        <p class="muted small">{{ size.per_sheet | items_on_sheet }}</p>
+        {% endif %}
+        <table class="data-table">
+          <thead><tr><th>Опция</th><th>+ к себестоимости, ₽</th><th>+ к цене, ₽</th></tr></thead>
+          <tbody>
+            {% for o in p.preview[size.name] %}
+            <tr>
+              <td>{{ o.name }}</td>
+              <td>{{ '%.3f'|format(o.cost_add) }}</td>
+              <td>{{ '%.2f'|format(o.price_add) }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endfor %}
+    </div>
+  </details>
+  {% endfor %}
+</section>
+{% endif %}
+{% endblock %}

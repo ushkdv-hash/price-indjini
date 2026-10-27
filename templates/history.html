@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}История{% endblock %}
+
+{% block content %}
+
+<div class="page-head">
+
+  <h1>История расчётов</h1>
+
+  <p class="muted">{% if user.role=='admin' %}Все сотрудники{% else %}Ваши расчёты{% endif %} · нажмите на строку для подробностей</p>
+
+</div>
+
+
+
+{% if not history %}
+
+<div class="card"><p class="muted">Пока нет ни одного расчёта.</p></div>
+
+{% else %}
+
+<div class="card">
+
+  <table class="data-table history-table">
+
+    <thead><tr><th>Когда</th>{% if user.role=='admin' %}<th>Сотрудник</th>{% endif %}<th>Название</th><th>Продукт</th><th>Тираж</th><th>Цена/шт</th><th>Итого</th></tr></thead>
+
+    <tbody>
+
+      {% for h in history %}
+
+      {% set r = h.result %}
+
+      <tr class="history-row" role="button" tabindex="0" data-index="{{ loop.index0 }}" title="Открыть расчёт">
+
+        <td class="nowrap">{{ h.when.replace('T',' ') }}</td>
+
+        {% if user.role=='admin' %}<td>{{ h.user }}</td>{% endif %}
+
+        <td><b>{{ h.title or '—' }}</b></td>
+
+        <td>{{ r.size }} · {{ r.material }}{% if r.get('calc_type') != 'plotter_grid' %} · {{ r.print_mode }}{% endif %}{% if r.options %} · {{ r.options|length }} опц.{% endif %}</td>
+
+        <td>{{ r.qty }}</td>
+
+        <td>{{ '%.2f'|format(r.price_after_discount) }} ₽</td>
+
+        <td><b>{{ '%.2f'|format(r.total) }} ₽</b></td>
+
+      </tr>
+
+      {% endfor %}
+
+    </tbody>
+
+  </table>
+
+</div>
+
+
+
+<div id="history-detail-modal" class="modal hidden" role="dialog" aria-labelledby="history-detail-title">
+
+  <div class="modal-backdrop" data-close-modal></div>
+
+  <div class="modal-box card modal-box-wide">
+
+    <div class="result-head">
+
+      <div>
+
+        <h2 id="history-detail-title">Расчёт</h2>
+
+        <p id="history-detail-meta" class="muted small"></p>
+
+      </div>
+
+      <button id="history-copy-btn" class="btn-ghost" type="button">Скопировать</button>
+
+    </div>
+
+    <div id="history-detail-body" class="result"></div>
+
+    <div class="modal-actions">
+
+      <button type="button" class="btn-ghost" data-close-modal>Закрыть</button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<script id="history-data" type="application/json">{{ history | tojson }}</script>
+
+<script id="history-meta" type="application/json">{{ {"show_admin_details": show_admin_details} | tojson }}</script>
+
+{% endif %}
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+{% if history %}
+
+<script src="{{ url_for('static', filename='calc-result.js') }}?v=4"></script>
+
+<script src="{{ url_for('static', filename='history.js') }}?v=2"></script>
+
+{% endif %}
+
+{% endblock %}
+

@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% block title %}Наценки{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Наценки по тиражам</h1>
+  <a href="{{ url_for('admin') }}" class="btn-ghost">← Назад в админку</a>
+</div>
+
+<form method="post">
+  <p class="muted small">Здесь собраны наценки всех видов продукции: ступенчатые по тиражу, фиксированные и единый множитель (price_factor / фиксированная наценка).
+  Профили наценки привязываются к материалам в разделе «Привязка материалов».
+  Одинаковые наценки показаны одной строкой; совпадающие размеры и профили — одной таблицей.</p>
+
+  {% if markup_products %}
+  <section class="preview-section">
+    {% for p in markup_products %}
+    <details class="card preview-panel">
+      <summary class="preview-summary">{{ p.title }}</summary>
+      <div class="preview-body">
+        {% if p.single %}
+        <div class="preview-size">
+          <h3>Наценка всего продукта</h3>
+          <p class="muted small">Единый множитель, применяемый к себестоимости (не зависит от тиража).</p>
+          <table class="data-table">
+            <thead><tr><th>Параметр</th><th>Множитель ×</th></tr></thead>
+            <tbody>
+              {% for s in p.single %}
+              <tr>
+                <td>{{ s.label }}<div class="muted small">{{ s.hint }}</div></td>
+                <td><input type="number" step="any" min="0" name="sx_{{ p.id }}_{{ s.field }}" value="{{ s.value }}"></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% endif %}
+        {% if p.calc_type == 'plotter_grid' and p.plotter_profile_groups %}
+        <div class="preview-size">
+          <h3>Общие наценки</h3>
+          <p class="muted small">Для плоттера наценка одна на весь продукт; размер влияет только на раскладку и тираж.</p>
+
+          {% for pg in p.plotter_profile_groups %}
+          {% set pgi = loop.index0 %}
+          <h4 class="markup-sub">{{ pg.profile_label }}</h4>
+
+          {% if pg.flat_groups %}
+          <p class="muted small">Фиксированная цена (малый тираж)</p>
+          <table class="data-table">
+            <thead><tr><th>Тираж, шт</th><th>Цена за 1 шт, ₽</th></tr></thead>
+            <tbody>
+              {% for fg in pg.flat_groups %}
+              <tr>
+                <td>{{ fg.label }}</td>
+                <td><input type="number" step="0.01" name="fp_{{ p.id }}_prod_pg_{{ pgi }}_fg_{{ loop.index0 }}" value="{{ fg.price }}"></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% endif %}
+
+          {% if pg.range_groups %}
+          <p class="muted small">Наценка по диапазону тиража</p>
+          <table class="data-table">
+            <thead><tr><th>Тираж, шт</th><th>Множитель ×</th></tr></thead>
+            <tbody>
+              {% for rg in pg.range_groups %}
+              <tr>
+                <td>{{ rg.label }}</td>
+                <td><input type="number" step="0.01" name="mr_{{ p.id }}_prod_pg_{{ pgi }}_rg_{{ loop.index0 }}" value="{{ rg.markup }}"></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% endif %}
+
+          {% if pg.tier_groups %}
+          <p class="muted small">Наценка по тиражу (ключевой тираж из калькулятора)</p>
+          <table class="data-table">
+            <thead><tr><th>Тираж, шт</th><th>Множитель ×</th></tr></thead>
+            <tbody>
+              {% for tg in pg.tier_groups %}
+              <tr>
+                <td>{{ tg.label }}</td>
+                <td><input type="number" step="0.01" name="mt_{{ p.id }}_prod_pg_{{ pgi }}_tg_{{ loop.index0 }}" value="{{ tg.markup }}"></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% endif %}
+          {% endfor %}
+        </div>
+        {% elif p.markup_clusters %}
+        {% for cluster in p.markup_clusters %}
+        {% set ci = loop.index0 %}
+        <div class="preview-size">
+          <h3 class="markup-cluster-title">{{ cluster.size_label }}</h3>
+
+          {% for pg in cluster.profile_groups %}
+          {% set pgi = loop.index0 %}
+          <h4 class="markup-sub">{{ pg.profile_label }}</h4>
+
+          {% if pg.flat_groups %}
+          <p class="muted small">Фиксированная цена (малый тираж)</p>
+          <table class="data-table">
+            <thead><tr><th>Тираж, шт</th><th>Цена за 1 шт, ₽</th></tr></thead>
+            <tbody>
+              {% for fg in pg.flat_groups %}
+              <tr>
+                <td>{{ fg.label }}</td>
+                <td><input type="number" step="0.01" name="fp_{{ p.id }}_cl_{{ ci }}_pg_{{ pgi }}_fg_{{ loop.index0 }}" value="{{ fg.price }}"></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% endif %}
+
+          {% if pg.range_groups %}
+          <p class="muted small">Наценка по диапазону тиража</p>
+          <table class="data-table">
+            <thead><tr><th>Тираж, шт</th><th>Множитель ×</th></tr></thead>
+            <tbody>
+              {% for rg in pg.range_groups %}
+              <tr>
+                <td>{{ rg.label }}</td>
+                <td><input type="number" step="0.01" name="mr_{{ p.id }}_cl_{{ ci }}_pg_{{ pgi }}_rg_{{ loop.index0 }}" value="{{ rg.markup }}"></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% endif %}
+
+          {% if pg.tier_groups %}
+          <p class="muted small">Наценка по тиражу</p>
+          <table class="data-table">
+            <thead><tr><th>Тираж, шт</th><th>Множитель ×</th></tr></thead>
+            <tbody>
+              {% for tg in pg.tier_groups %}
+              <tr>
+                <td>{{ tg.label }}</td>
+                <td><input type="number" step="0.01" name="mt_{{ p.id }}_cl_{{ ci }}_pg_{{ pgi }}_tg_{{ loop.index0 }}" value="{{ tg.markup }}"></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% endif %}
+          {% endfor %}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        {% for size in p.sizes %}
+        {% if size.markup %}
+        {% set si = loop.index0 %}
+        <div class="preview-size">
+          <h3>{{ size.name }} (устар.)</h3>
+          {% for group, rows in size.markup.items() %}
+          {% if rows %}
+          <h4 class="markup-sub">{{ group }}</h4>
+          <table class="data-table">
+            <thead><tr><th>Тираж, шт</th><th>Множитель ×</th></tr></thead>
+            <tbody>
+              {% for row in rows %}
+              <tr>
+                <td>{{ row[0] }}</td>
+                <td><input type="number" step="0.01" name="mk_{{ p.id }}_{{ si }}_{{ group }}_{{ loop.index0 }}" value="{{ row[1] }}"></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% endif %}
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+    </details>
+    {% endfor %}
+  </section>
+  {% else %}
+  <div class="card"><p class="muted">Нет продуктов с наценками.</p></div>
+  {% endif %}
+
+  <button type="submit" class="btn-primary" style="margin-top:16px">Сохранить наценки</button>
+</form>
+{% endblock %}

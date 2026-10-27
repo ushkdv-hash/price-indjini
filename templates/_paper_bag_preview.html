@@ -1,0 +1,13 @@
+{# Схематичный вид бумажного пакета с размерами (рисуется в JS по W×H×D) #}
+{% macro paper_bag_preview() %}
+<div id="paper-bag-preview" class="quarterly-preview paper-bag-preview" aria-live="polite">
+  <h2 class="quarterly-preview-title">Вид пакета</h2>
+  <div class="quarterly-preview-frame">
+    <figure class="paper-bag-illus">
+      <figcaption id="paper-bag-preview-caption" class="quarterly-illus-caption"></figcaption>
+      <svg id="paper-bag-preview-svg" class="quarterly-illus-svg paper-bag-illus-svg" viewBox="0 0 240 268" aria-hidden="true"></svg>
+    </figure>
+  </div>
+  <p class="quarterly-illus-note muted small">Схема в масштабе: высота × длина × глубина (мм, как в прайсе)</p>
+</div>
+{% endmacro %}

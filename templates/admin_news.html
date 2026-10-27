@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Новости{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Новости</h1>
+  <a href="{{ url_for('admin') }}" class="btn-ghost">← Назад в админку</a>
+</div>
+
+<p class="muted">Создайте новость об обновлениях прайса — она появится всплывающим окном у всех сотрудников, пока они её не закроют.</p>
+
+<form method="post" class="card">
+  <input type="hidden" name="action" value="create">
+  <h2>Новая новость</h2>
+  <div class="field">
+    <label for="news-title">Заголовок</label>
+    <input type="text" id="news-title" name="title" maxlength="200" required placeholder="Например: Обновление листовок">
+  </div>
+  <div class="field">
+    <label for="news-body">Текст</label>
+    <textarea id="news-body" name="body" rows="6" required placeholder="Что изменилось в прайсе или калькуляторе…"></textarea>
+  </div>
+  <button type="submit" class="btn-primary">Опубликовать</button>
+</form>
+
+<section class="card">
+  <h2>Опубликованные новости</h2>
+  {% if news_items %}
+  <div class="news-admin-list">
+    {% for item in news_items %}
+    <article class="news-admin-item">
+      <div class="news-admin-head">
+        <div>
+          <h3>{{ item.title }}</h3>
+          <p class="muted small">{{ item.created_at | news_datetime }}{% if not item.active %} · <span class="news-inactive-label">скрыта</span>{% endif %}</p>
+        </div>
+        <div class="news-admin-actions">
+          <form method="post" class="inline-form">
+            <input type="hidden" name="action" value="toggle">
+            <input type="hidden" name="news_id" value="{{ item.id }}">
+            <button type="submit" class="btn-ghost small">{{ 'Скрыть' if item.active else 'Показать' }}</button>
+          </form>
+          <form method="post" onsubmit="return confirm('Удалить эту новость?')">
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="news_id" value="{{ item.id }}">
+            <button type="submit" class="btn-danger small">Удалить</button>
+          </form>
+        </div>
+      </div>
+      <div class="news-admin-body muted">{{ item.body }}</div>
+      <details class="news-edit-details">
+        <summary>Редактировать</summary>
+        <form method="post" class="news-edit-form">
+          <input type="hidden" name="action" value="update">
+          <input type="hidden" name="news_id" value="{{ item.id }}">
+          <div class="field">
+            <label>Заголовок</label>
+            <input type="text" name="title" value="{{ item.title }}" maxlength="200" required>
+          </div>
+          <div class="field">
+            <label>Текст</label>
+            <textarea name="body" rows="5" required>{{ item.body }}</textarea>
+          </div>
+          <button type="submit" class="btn-primary small">Сохранить</button>
+        </form>
+      </details>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="muted">Пока нет новостей.</p>
+  {% endif %}
+</section>
+{% endblock %}

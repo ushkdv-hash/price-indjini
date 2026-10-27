@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Материалы и печать{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Материалы и печать</h1>
+  <a href="{{ url_for('admin') }}" class="btn-ghost">← Назад в админку</a>
+</div>
+
+<form method="post" class="card">
+  <p class="muted small">Общий каталог материалов — одна цена для всех продуктов. Какие бумаги доступны в каждом калькуляторе — в разделе <a href="{{ url_for('admin_bindings') }}">Привязка материалов</a>.</p>
+
+  <h2>Стоимость печати</h2>
+  <table class="data-table">
+    <thead><tr><th>Наименование</th><th>Цена за А3, ₽</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Коника 4+0 (за лист А3)</td>
+        <td><input type="number" step="0.01" name="print_4_0" value="{{ print_4_0 }}"></td>
+      </tr>
+      <tr>
+        <td>Коника 1+0 (за лист А3)</td>
+        <td><input type="number" step="0.01" name="print_1_0" value="{{ print_1_0 }}"></td>
+      </tr>
+      <tr>
+        <td>Ксерокс 4+0 (за лист А3)</td>
+        <td><input type="number" step="0.01" name="xerox_print_4_0" value="{{ xerox_print_4_0 }}"></td>
+      </tr>
+      <tr>
+        <td>Ксерокс 1+0 (за лист А3)</td>
+        <td><input type="number" step="0.01" name="xerox_print_1_0" value="{{ xerox_print_1_0 }}"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Каталог материалов (цена за лист А3)</h2>
+  <table class="data-table">
+    <thead><tr><th>Материал</th><th>Цена за А3, ₽</th></tr></thead>
+    <tbody>
+      {% for idx, m in materials %}
+      <tr>
+        <td>
+          {{ m.name }}
+          {% if m.custom_price_a3 %}
+          <span class="muted small">· цена вводится в калькуляторе</span>
+          {% endif %}
+        </td>
+        <td><input type="number" step="0.01" name="mat_price_{{ idx }}" value="{{ m.price_a3 }}"></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <button type="submit" class="btn-primary">Сохранить</button>
+</form>
+
+<form method="post" class="card add-block">
+  <input type="hidden" name="action" value="add_material">
+  <h2>Добавить материал в каталог</h2>
+  <p class="muted small">После добавления включите материал в нужных калькуляторах через «Привязка материалов».</p>
+  <div class="add-form-grid">
+    <div class="field">
+      <label for="new_name">Название</label>
+      <input type="text" id="new_name" name="new_name" maxlength="120" required placeholder="Например: Меловка 300 г">
+    </div>
+    <div class="field">
+      <label for="new_price">Цена за А3, ₽</label>
+      <input type="number" id="new_price" name="new_price" step="0.01" min="0" required>
+    </div>
+    <div class="field field-check">
+      <label class="opt-item">
+        <input type="checkbox" name="new_custom" value="1">
+        <span>Нестандартная — цена вводится в калькуляторе</span>
+      </label>
+    </div>
+  </div>
+  <button type="submit" class="btn-primary">Добавить материал</button>
+</form>
+{% endblock %}

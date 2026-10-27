@@ -1,0 +1,84 @@
+{# Развертка папки — векторные макеты из прайса (маска + currentColor) #}
+
+{% macro papki_preview(active_variant) %}
+
+<div id="papki-preview" class="quarterly-preview papki-preview" aria-live="polite">
+
+  <h2 class="quarterly-preview-title">Развертка</h2>
+
+  <div class="quarterly-preview-frame">
+
+
+
+    <figure class="quarterly-illus papki-illus{% if active_variant != '145' %} hidden{% endif %}" data-papki="145">
+
+      <svg class="quarterly-illus-svg papki-illus-svg" viewBox="0 0 467 358" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+
+        <defs>
+
+          <mask id="papki-mask-145">
+
+            <image href="{{ url_for('static', filename='images/papki/papka-145-stroke.png') }}" width="467" height="358"/>
+
+          </mask>
+
+        </defs>
+
+        <rect width="467" height="358" fill="currentColor" mask="url(#papki-mask-145)"/>
+
+      </svg>
+
+    </figure>
+
+
+
+    <figure class="quarterly-illus papki-illus{% if active_variant != '835' %} hidden{% endif %}" data-papki="835">
+
+      <svg class="quarterly-illus-svg papki-illus-svg" viewBox="0 0 466 357" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+
+        <defs>
+
+          <mask id="papki-mask-835">
+
+            <image href="{{ url_for('static', filename='images/papki/papka-835-stroke.png') }}" width="466" height="357"/>
+
+          </mask>
+
+        </defs>
+
+        <rect width="466" height="357" fill="currentColor" mask="url(#papki-mask-835)"/>
+
+      </svg>
+
+    </figure>
+
+
+
+    <figure class="quarterly-illus papki-illus{% if active_variant != '0204' %} hidden{% endif %}" data-papki="0204">
+
+      <svg class="quarterly-illus-svg papki-illus-svg" viewBox="0 0 473 380" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+
+        <defs>
+
+          <mask id="papki-mask-0204">
+
+            <image href="{{ url_for('static', filename='images/papki/papka-0204-stroke.png') }}" width="473" height="380"/>
+
+          </mask>
+
+        </defs>
+
+        <rect width="473" height="380" fill="currentColor" mask="url(#papki-mask-0204)"/>
+
+      </svg>
+
+    </figure>
+
+
+
+  </div>
+
+</div>
+
+{% endmacro %}
+

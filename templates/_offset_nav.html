@@ -1,0 +1,11 @@
+{% macro offset_nav(hub, active_id, papki_ids=none) %}
+{% if hub %}
+{% set papki_set = papki_ids or [] %}
+<nav class="calendar-nav offset-nav" aria-label="Вид офсетной продукции">
+  {% for pid, label in hub %}
+  <a href="{{ url_for('calculator_product', product_id=pid) }}"
+     class="calendar-nav-item{% if pid == active_id or (pid == 'papki_0204_ofset' and active_id in papki_set) %} active{% endif %}">{{ label }}</a>
+  {% endfor %}
+</nav>
+{% endif %}
+{% endmacro %}

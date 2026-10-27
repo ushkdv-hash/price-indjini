@@ -1,0 +1,10 @@
+{% macro calendar_nav(hub, active_id) %}
+{% if hub %}
+<nav class="calendar-nav" aria-label="Вид календаря">
+  {% for pid, label in hub %}
+  <a href="{{ url_for('calculator_product', product_id=pid) }}"
+     class="calendar-nav-item{% if pid == active_id %} active{% endif %}">{{ label }}</a>
+  {% endfor %}
+</nav>
+{% endif %}
+{% endmacro %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Формулы расчёта{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Формулы расчёта</h1>
+  <a href="{{ url_for('admin') }}" class="btn-ghost">← Назад в админку</a>
+</div>
+
+<p class="muted">Справка по формулам с подставленными текущими значениями из справочников.
+Числовые примеры пересчитываются при каждом открытии страницы.
+Числовые параметры формул можно править прямо на странице продукта — кнопка «Сохранить изменения».</p>
+
+<div class="admin-tiles">
+  {% for pid, prod in products.items() %}
+  <a href="{{ url_for('admin_formulas_product', product_id=pid) }}" class="tile">
+    <div class="tile-ic">∑</div>
+    <div><b>{{ prod.title }}</b><span>Базовая формула, опции, примеры расчёта</span></div>
+  </a>
+  {% else %}
+  <p class="muted">Нет настроенных продуктов.</p>
+  {% endfor %}
+</div>
+{% endblock %}

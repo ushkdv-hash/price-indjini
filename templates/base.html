@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Калькулятор прайса{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=19">
+</head>
+<body>
+{% if user %}
+{% if viewing_as_employee %}
+<div class="impersonation-banner">
+  <span>Вы просматриваете сайт <b>как сотрудник</b> (без доступа к админке).</span>
+  <form method="post" action="{{ url_for('admin_view_as_admin') }}" class="impersonation-form">
+    <button type="submit" class="btn-ghost small">Вернуться в режим админа</button>
+  </form>
+</div>
+{% endif %}
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">▣</span>
+    <span>Прайс-калькулятор</span>
+  </div>
+  <nav class="nav">
+    <a href="{{ url_for('calculator') }}" class="{{ 'active' if request.endpoint=='calculator' }}">Калькулятор</a>
+    <a href="{{ url_for('design_page') }}" class="{{ 'active' if request.endpoint=='design_page' }}">Дизайн</a>
+    <a href="{{ url_for('extra_info') }}" class="{{ 'active' if request.endpoint=='extra_info' }}">Доп. информация</a>
+    <a href="{{ url_for('history') }}" class="{{ 'active' if request.endpoint=='history' }}">История</a>
+    <a href="{{ url_for('profile_password') }}" class="{{ 'active' if request.endpoint=='profile_password' }}">Пароль</a>
+    {% if user.role == 'admin' %}
+    <a href="{{ url_for('admin') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin') }}">Админка</a>
+    {% endif %}
+  </nav>
+  <div class="userbox">
+    <span class="uname">
+      {{ (real_user or user).full_name }}
+      {% if real_user and real_user.role == 'admin' %}
+      <form method="post" action="{{ url_for('admin_view_as_switch') }}" class="view-mode-form">
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <select
+          name="mode"
+          class="view-mode-select {{ 'view-mode-employee' if viewing_as_employee else 'view-mode-admin' }}"
+          aria-label="Режим просмотра"
+          onchange="this.form.submit()"
+        >
+          <option value="admin"{% if not viewing_as_employee %} selected{% endif %}>админ</option>
+          <option value="employee"{% if viewing_as_employee %} selected{% endif %}>просмотр</option>
+        </select>
+      </form>
+      {% endif %}
+    </span>
+    <a href="{{ url_for('logout') }}" class="btn-ghost">Выйти</a>
+  </div>
+</header>
+{% endif %}
+
+<main class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flashes">
+        {% for cat, msg in messages %}
+          <div class="flash flash-{{ cat }}">{{ msg }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</main>
+
+{% if user %}
+<div id="news-modal" class="modal hidden" role="dialog" aria-labelledby="news-modal-title">
+  <div class="modal-backdrop" data-close-news></div>
+  <div class="modal-box modal-box-wide card news-modal-box">
+    <p class="news-modal-badge">Новость</p>
+    <h2 id="news-modal-title"></h2>
+    <p id="news-modal-date" class="muted small news-modal-date"></p>
+    <div id="news-modal-body" class="news-modal-body"></div>
+    <p id="news-modal-queue" class="muted small news-modal-queue hidden"></p>
+    <div class="modal-actions">
+      <button type="button" id="news-dismiss-btn" class="btn-primary">Понятно</button>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+{% if user %}
+<script src="{{ url_for('static', filename='news.js') }}?v=1"></script>
+{% endif %}
+{% block scripts %}{% endblock %}
+</body>
+</html>

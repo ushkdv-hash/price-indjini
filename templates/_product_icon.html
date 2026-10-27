@@ -1,0 +1,226 @@
+{# Схематическая иконка продукта для карточки калькулятора #}
+{% macro product_icon(icon_id) %}
+<div class="product-icon" aria-hidden="true">
+  {% if icon_id == 'vizitki' %}
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="22" y="14" width="30" height="18" rx="2.5" fill="currentColor" opacity="0.18" stroke="currentColor" stroke-width="1.5"/>
+    <rect x="18" y="20" width="30" height="18" rx="2.5" fill="currentColor" opacity="0.28" stroke="currentColor" stroke-width="1.5"/>
+    <rect x="14" y="26" width="30" height="18" rx="2.5" fill="var(--card)" stroke="currentColor" stroke-width="1.5"/>
+    <line x1="19" y1="32" x2="39" y2="32" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+    <line x1="19" y1="36" x2="33" y2="36" stroke="currentColor" stroke-width="1.2" opacity="0.35"/>
+  </svg>
+  {% elif icon_id == 'listovki' %}
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="18" y="8" width="28" height="48" rx="2" fill="var(--card)" stroke="currentColor" stroke-width="1.5"/>
+    <rect x="18" y="8" width="28" height="48" rx="2" fill="currentColor" opacity="0.08"/>
+    <line x1="23" y1="18" x2="41" y2="18" stroke="currentColor" stroke-width="1.5" opacity="0.55"/>
+    <line x1="23" y1="24" x2="41" y2="24" stroke="currentColor" stroke-width="1.2" opacity="0.4"/>
+    <line x1="23" y1="30" x2="41" y2="30" stroke="currentColor" stroke-width="1.2" opacity="0.4"/>
+    <line x1="23" y1="36" x2="37" y2="36" stroke="currentColor" stroke-width="1.2" opacity="0.35"/>
+    <rect x="23" y="42" width="14" height="8" rx="1" fill="currentColor" opacity="0.2" stroke="currentColor" stroke-width="1"/>
+  </svg>
+  {% elif icon_id == 'stickery_plotter' %}
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="10" y="14" width="44" height="36" rx="3" fill="var(--card)" stroke="currentColor" stroke-width="1.5"/>
+    <rect x="16" y="22" width="12" height="12" rx="2" fill="currentColor" opacity="0.25" stroke="currentColor" stroke-width="1.2"/>
+    <rect x="32" y="22" width="18" height="8" rx="1.5" fill="currentColor" opacity="0.15" stroke="currentColor" stroke-width="1"/>
+    <rect x="32" y="34" width="14" height="8" rx="1.5" fill="currentColor" opacity="0.15" stroke="currentColor" stroke-width="1"/>
+    <path d="M14 50h36" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+  </svg>
+  {% elif icon_id == 'otkrytki_diplomy' %}
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="14" y="12" width="36" height="40" rx="2" fill="var(--card)" stroke="currentColor" stroke-width="1.5"/>
+    <path d="M14 20h36" stroke="currentColor" stroke-width="1.2" opacity="0.35"/>
+    <rect x="20" y="26" width="24" height="3" rx="1" fill="currentColor" opacity="0.45"/>
+    <rect x="20" y="33" width="18" height="2.5" rx="1" fill="currentColor" opacity="0.3"/>
+    <path d="M32 46l8 6H24l8-6z" fill="currentColor" opacity="0.2" stroke="currentColor" stroke-width="1.2"/>
+  </svg>
+  {% elif icon_id == 'beizhi' %}
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M24 26 C24 16 34 8 46 12 C44 20 34 22 24 26 Z" fill="var(--card)" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M26 26 C26 18 34 12 44 15 C42 21 34 22 26 26 Z" fill="currentColor" fill-opacity="0.06" stroke="currentColor" stroke-width="1" stroke-opacity="0.25"/>
+    <circle cx="25" cy="26" r="1.6" fill="var(--card)" stroke="currentColor" stroke-width="1.2"/>
+    <path d="M25 27.5 V30.5 M23.5 29 H26.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+    <rect x="14" y="30" width="22" height="30" rx="2.5" fill="var(--card)" stroke="currentColor" stroke-width="1.5"/>
+    <rect x="17.5" y="33" width="15" height="22" rx="1" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-width="1" stroke-opacity="0.32"/>
+    <rect x="20" y="36" width="10" height="7" rx="0.8" fill="currentColor" fill-opacity="0.14" stroke="currentColor" stroke-width="0.9" stroke-opacity="0.3"/>
+    <line x1="20" y1="46" x2="30" y2="46" stroke="currentColor" stroke-width="0.9" stroke-opacity="0.35"/>
+    <line x1="20" y1="49" x2="28" y2="49" stroke="currentColor" stroke-width="0.9" stroke-opacity="0.28"/>
+    <rect x="21" y="31" width="8" height="2.2" rx="1.1" fill="var(--card)" stroke="currentColor" stroke-width="1"/>
+  </svg>
+  {% elif icon_id == 'birki' %}
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M24 14 L32 8 L40 14 V46 H24 Z" fill="var(--card)" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    <circle cx="32" cy="14" r="2" fill="currentColor" opacity="0.3" stroke="currentColor" stroke-width="1"/>
+    <line x1="27" y1="22" x2="37" y2="22" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+    <line x1="27" y1="28" x2="35" y2="28" stroke="currentColor" stroke-width="1.2" opacity="0.35"/>
+    <line x1="27" y1="34" x2="37" y2="34" stroke="currentColor" stroke-width="1.2" opacity="0.35"/>
+  </svg>
+  {% elif icon_id == 'brosyury_menyu' %}
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M29 56 L30 24 L46 23 L47 55 Z" fill="var(--card)"/>
+    <path d="M48 23 L62 22 L63 54 L49 55 Z" fill="var(--card)"/>
+    <path d="M29 56 L30 24 L62 22 L63 54 L49 55 L47 55 Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    <line x1="34" y1="32" x2="43" y2="31.5" stroke="currentColor" stroke-width="1" stroke-opacity="0.35"/>
+    <line x1="34" y1="38" x2="41" y2="37.5" stroke="currentColor" stroke-width="1" stroke-opacity="0.28"/>
+    <line x1="52" y1="31.5" x2="60" y2="31" stroke="currentColor" stroke-width="1" stroke-opacity="0.35"/>
+    <line x1="52" y1="37.5" x2="59" y2="37" stroke="currentColor" stroke-width="1" stroke-opacity="0.28"/>
+    <line x1="47" y1="23" x2="48" y2="55" stroke="currentColor" stroke-width="0.55" stroke-opacity="0.18"/>
+    <line x1="47.5" y1="30.5" x2="47.5" y2="33.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="47.5" y1="41.5" x2="47.5" y2="44.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M6 53 L23 51.5 L22 53.5 L5 55 Z" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-width="1" stroke-opacity="0.28"/>
+    <path d="M4 7 L23 6 L24 52 L5 53 Z" fill="var(--card)" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    <rect x="9" y="14" width="9" height="7" rx="1" fill="currentColor" fill-opacity="0.12" stroke="currentColor" stroke-width="1" stroke-opacity="0.32"/>
+    <line x1="9" y1="25" x2="18" y2="24.5" stroke="currentColor" stroke-width="1" stroke-opacity="0.35"/>
+    <line x1="9" y1="30" x2="17" y2="29.5" stroke="currentColor" stroke-width="1" stroke-opacity="0.3"/>
+    <line x1="9" y1="35" x2="18" y2="34.5" stroke="currentColor" stroke-width="1" stroke-opacity="0.28"/>
+    <line x1="9" y1="40" x2="16" y2="39.5" stroke="currentColor" stroke-width="1" stroke-opacity="0.25"/>
+    <path d="M4.5 10.5 C7.5 11.2 7.5 13.8 4.5 14.5 C1.5 15.2 1.5 17.8 4.5 18.5 C7.5 19.2 7.5 21.8 4.5 22.5 C1.5 23.2 1.5 25.8 4.5 26.5 C7.5 27.2 7.5 29.8 4.5 30.5 C1.5 31.2 1.5 33.8 4.5 34.5 C7.5 35.2 7.5 37.8 4.5 38.5 C1.5 39.2 1.5 41.8 4.5 42.5 C7.5 43.2 7.5 45.8 4.5 46.5 C1.5 47.2 1.5 49.8 4.5 50.5" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+  </svg>
+  {% elif icon_id == 'konverty' %}
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M14 20 L32 34 L50 20 V46 C50 49 47 52 44 52 H20 C17 52 14 49 14 46 Z" fill="var(--card)" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M14 20 L32 34 L50 20" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M14 20 H50" stroke="currentColor" stroke-width="1.5"/>
+  </svg>
+  {% elif icon_id == 'brendirovannye_stakanchiki' %}
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M16 21 L20 53 Q32 56 44 53 L48 21 Z" fill="var(--card)" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    <ellipse cx="32" cy="17" rx="18" ry="4.2" fill="var(--card)" stroke="currentColor" stroke-width="1.5"/>
+    <ellipse cx="32" cy="18.2" rx="13.5" ry="2.9" fill="currentColor" fill-opacity="0.1" stroke="currentColor" stroke-width="1" stroke-opacity="0.32"/>
+    <rect x="25" y="30" width="14" height="13" rx="1" fill="currentColor" fill-opacity="0.16" stroke="currentColor" stroke-width="1" stroke-opacity="0.35"/>
+    <path d="M27 35 H37 M27 39 H34" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-opacity="0.45"/>
+    <line x1="47.5" y1="23" x2="43.5" y2="51" stroke="currentColor" stroke-width="0.75" stroke-opacity="0.22"/>
+  </svg>
+  {% elif icon_id == 'oblozhki_karton' %}
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="14" y="12" width="6" height="40" rx="2" fill="currentColor" opacity="0.22" stroke="currentColor" stroke-width="1.2"/>
+    <rect x="20" y="10" width="32" height="44" rx="3" fill="var(--card)" stroke="currentColor" stroke-width="1.5"/>
+    <rect x="20" y="10" width="32" height="44" rx="3" fill="currentColor" opacity="0.08"/>
+    <line x1="26" y1="20" x2="46" y2="20" stroke="currentColor" stroke-width="1.4" opacity="0.55"/>
+    <line x1="26" y1="27" x2="46" y2="27" stroke="currentColor" stroke-width="1.1" opacity="0.4"/>
+    <line x1="26" y1="34" x2="42" y2="34" stroke="currentColor" stroke-width="1.1" opacity="0.4"/>
+    <rect x="26" y="41" width="12" height="7" rx="1" fill="currentColor" opacity="0.18" stroke="currentColor" stroke-width="1"/>
+    <circle cx="17" cy="20" r="3" fill="var(--card)" stroke="currentColor" stroke-width="1.3"/>
+    <circle cx="17" cy="32" r="3" fill="var(--card)" stroke="currentColor" stroke-width="1.3"/>
+    <circle cx="17" cy="44" r="3" fill="var(--card)" stroke="currentColor" stroke-width="1.3"/>
+  </svg>
+  {% elif icon_id == 'bloknoty' %}
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M19 55 L49 54 L50 56 L20 57 Z" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-width="1" stroke-opacity="0.28"/>
+    <path d="M18 12 L48 11 L49 54 L19 55 Z" fill="var(--card)" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    <line x1="22" y1="22" x2="44" y2="21.5" stroke="currentColor" stroke-width="1" stroke-opacity="0.35"/>
+    <line x1="22" y1="28" x2="42" y2="27.5" stroke="currentColor" stroke-width="1" stroke-opacity="0.3"/>
+    <line x1="22" y1="34" x2="44" y2="33.5" stroke="currentColor" stroke-width="1" stroke-opacity="0.3"/>
+    <line x1="22" y1="40" x2="41" y2="39.5" stroke="currentColor" stroke-width="1" stroke-opacity="0.28"/>
+    <line x1="22" y1="46" x2="43" y2="45.5" stroke="currentColor" stroke-width="1" stroke-opacity="0.25"/>
+    <path d="M20 10.5 C21.5 7.7 22.5 7.7 24 10.5 C25.5 13.3 26.5 13.3 28 10.5 C29.5 7.7 30.5 7.7 32 10.5 C33.5 13.3 34.5 13.3 36 10.5 C37.5 7.7 38.5 7.7 40 10.5 C41.5 13.3 42.5 13.3 44 10.5 C45.5 7.7 46.5 7.7 48 10.5" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+  </svg>
+  {% elif icon_id == 'kvartalnye_kalendari' %}
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="14" y="10" width="36" height="44" rx="2" fill="var(--card)" stroke="currentColor" stroke-width="1.5"/>
+    <rect x="18" y="14" width="28" height="12" rx="1" fill="currentColor" opacity="0.15" stroke="currentColor" stroke-width="1"/>
+    <line x1="18" y1="30" x2="46" y2="30" stroke="currentColor" stroke-width="1" opacity="0.35"/>
+    <line x1="18" y1="36" x2="46" y2="36" stroke="currentColor" stroke-width="1" opacity="0.35"/>
+    <line x1="18" y1="42" x2="46" y2="42" stroke="currentColor" stroke-width="1" opacity="0.35"/>
+    <line x1="26" y1="30" x2="26" y2="48" stroke="currentColor" stroke-width="1" opacity="0.35"/>
+    <line x1="38" y1="30" x2="38" y2="48" stroke="currentColor" stroke-width="1" opacity="0.35"/>
+    <circle cx="32" cy="8" r="2" fill="currentColor" opacity="0.4"/>
+  </svg>
+  {% elif icon_id == 'perekidnye_kalendari' %}
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="20" y="12" width="24" height="40" rx="2" fill="var(--card)" stroke="currentColor" stroke-width="1.5"/>
+    <rect x="16" y="16" width="24" height="40" rx="2" fill="currentColor" opacity="0.12" stroke="currentColor" stroke-width="1.2"/>
+    <rect x="24" y="20" width="24" height="40" rx="2" fill="var(--card)" stroke="currentColor" stroke-width="1.5"/>
+    <line x1="28" y1="30" x2="44" y2="30" stroke="currentColor" stroke-width="1" opacity="0.35"/>
+    <line x1="28" y1="38" x2="40" y2="38" stroke="currentColor" stroke-width="1" opacity="0.3"/>
+  </svg>
+  {% elif icon_id == 'domiki_kalendari' %}
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 28 L32 14 L46 28" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" fill="currentColor" fill-opacity="0.12"/>
+    <rect x="20" y="28" width="24" height="26" rx="2" fill="var(--card)" stroke="currentColor" stroke-width="1.5"/>
+    <rect x="24" y="34" width="16" height="14" rx="1" fill="currentColor" opacity="0.1" stroke="currentColor" stroke-width="1"/>
+    <line x1="26" y1="38" x2="38" y2="38" stroke="currentColor" stroke-width="1" opacity="0.35"/>
+    <line x1="26" y1="42" x2="34" y2="42" stroke="currentColor" stroke-width="1" opacity="0.3"/>
+  </svg>
+  {% elif icon_id == 'karmannye_kalendari' %}
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="22" y="16" width="20" height="32" rx="2" fill="var(--card)" stroke="currentColor" stroke-width="1.5"/>
+    <rect x="26" y="22" width="12" height="10" rx="1" fill="currentColor" opacity="0.15"/>
+    <line x1="26" y1="36" x2="38" y2="36" stroke="currentColor" stroke-width="1" opacity="0.35"/>
+    <line x1="26" y1="40" x2="34" y2="40" stroke="currentColor" stroke-width="1" opacity="0.3"/>
+    <rect x="30" y="12" width="4" height="6" rx="1" fill="currentColor" opacity="0.25"/>
+  </svg>
+  {% elif icon_id == 'sublimaciya' %}
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="18" cy="28" r="17" fill="currentColor" fill-opacity="0.07" stroke="currentColor" stroke-width="1.5"/>
+    <circle cx="18" cy="28" r="13" fill="var(--card)" stroke="currentColor" stroke-width="1" stroke-opacity="0.35"/>
+    <circle cx="18" cy="28" r="7.5" fill="currentColor" fill-opacity="0.05" stroke="currentColor" stroke-width="1" stroke-opacity="0.25"/>
+    <ellipse cx="18" cy="42" rx="14" ry="2" fill="currentColor" fill-opacity="0.04"/>
+    <rect x="27" y="20" width="18" height="28" fill="var(--card)" stroke="currentColor" stroke-width="1.5"/>
+    <ellipse cx="36" cy="20" rx="10.5" ry="3.2" fill="var(--card)" stroke="currentColor" stroke-width="1.5"/>
+    <ellipse cx="36" cy="20" rx="7.5" ry="2.2" fill="currentColor" fill-opacity="0.1" stroke="currentColor" stroke-width="1" stroke-opacity="0.3"/>
+    <line x1="27" y1="48" x2="45" y2="48" stroke="currentColor" stroke-width="1.5"/>
+    <path d="M45 23 C54 23 56.5 28 56.5 35 C56.5 42 54 47 45 47" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <rect x="30" y="28" width="12" height="11" rx="0.8" fill="currentColor" fill-opacity="0.12" stroke="currentColor" stroke-width="1" stroke-opacity="0.35"/>
+    <path d="M31.5 31.5 H40.5 M31.5 35 H38" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-opacity="0.4"/>
+  </svg>
+  {% elif icon_id == 'pakety_pvd' %}
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 17 H26 V47 H8 V17 Z M13 21.5 A3.8 1.35 0 0 0 21 21.5 A3.8 1.35 0 0 0 13 21.5 Z" fill="currentColor" fill-opacity="0.1" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    <rect x="11" y="27" width="13" height="8" rx="0.6" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-opacity="0.2" stroke-width="0.6"/>
+    <line x1="12" y1="39" x2="22" y2="39" stroke="currentColor" stroke-opacity="0.22" stroke-width="0.9" stroke-linecap="round"/>
+    <line x1="12" y1="42" x2="17" y2="42" stroke="currentColor" stroke-opacity="0.18" stroke-width="0.8" stroke-linecap="round"/>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M27 15 H51 V49 H27 V15 Z M33 20 A4.8 1.45 0 0 0 45 20 A4.8 1.45 0 0 0 33 20 Z" fill="var(--card)" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    <rect x="30" y="26" width="18" height="9" rx="0.8" fill="currentColor" fill-opacity="0.14" stroke="currentColor" stroke-opacity="0.28" stroke-width="0.7"/>
+    <line x1="31" y1="39" x2="47" y2="39" stroke="currentColor" stroke-opacity="0.45" stroke-width="1" stroke-linecap="round"/>
+    <line x1="31" y1="42" x2="39" y2="42" stroke="currentColor" stroke-opacity="0.35" stroke-width="0.9" stroke-linecap="round"/>
+    <line x1="41" y1="42" x2="47" y2="42" stroke="currentColor" stroke-opacity="0.3" stroke-width="0.9" stroke-linecap="round"/>
+  </svg>
+  {% elif icon_id == 'shirokoformatnaya_pechat' %}
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="10" y="16" width="44" height="32" rx="1.5" fill="var(--card)" stroke="currentColor" stroke-width="1.5"/>
+    <rect x="15" y="23" width="34" height="18" rx="1" fill="currentColor" fill-opacity="0.1" stroke="currentColor" stroke-opacity="0.22" stroke-width="0.7"/>
+    <path d="M17 35 L27 27 L37 33 L47 25" stroke="currentColor" stroke-opacity="0.32" stroke-width="0.9" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="19" y="29" width="10" height="7" rx="0.8" fill="currentColor" fill-opacity="0.16" stroke="currentColor" stroke-opacity="0.25" stroke-width="0.6"/>
+    {% for x, y in [(12, 18), (32, 16), (52, 18), (54, 32), (52, 46), (32, 48), (12, 46), (10, 32)] %}
+    <circle cx="{{ x }}" cy="{{ y }}" r="2.1" fill="var(--card)" stroke="currentColor" stroke-width="1.5"/>
+    <circle cx="{{ x }}" cy="{{ y }}" r="0.85" fill="currentColor" fill-opacity="0.2"/>
+    {% endfor %}
+  </svg>
+  {% elif icon_id == 'bumazhnye_pakety' %}
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M 40 50 L 49 47 L 49 15 L 40 18 Z" fill="currentColor" fill-opacity="0.12" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    <rect x="10" y="18" width="30" height="32" rx="0.8" fill="var(--card)" stroke="currentColor" stroke-width="1.5"/>
+    <rect x="14" y="27" width="22" height="13" rx="0.6" fill="currentColor" fill-opacity="0.14" stroke="currentColor" stroke-opacity="0.28" stroke-width="0.7"/>
+    <path d="M 11 18 Q 25 12 39 18" fill="none" stroke="currentColor" stroke-opacity="0.35" stroke-width="0.8"/>
+    <path d="M 49 15 L 44 10 L 40 18" fill="none" stroke="currentColor" stroke-opacity="0.3" stroke-width="0.7"/>
+    <line x1="10" y1="50" x2="40" y2="50" stroke="currentColor" stroke-opacity="0.25" stroke-width="0.6"/>
+    <circle cx="17" cy="21" r="1.4" fill="var(--accent)" fill-opacity="0.55" stroke="currentColor" stroke-opacity="0.4" stroke-width="0.5"/>
+    <circle cx="33" cy="21" r="1.4" fill="var(--accent)" fill-opacity="0.55" stroke="currentColor" stroke-opacity="0.4" stroke-width="0.5"/>
+    <path d="M 17 21 Q 25 12 33 21" fill="none" stroke="var(--accent)" stroke-opacity="0.65" stroke-width="0.9" stroke-dasharray="1.5,1.5"/>
+  </svg>
+  {% elif icon_id == 'ofset' %}
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="8" y="50" width="48" height="4" rx="0.6" fill="var(--card)" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    <rect x="13" y="54" width="7" height="5" rx="0.5" fill="var(--card)" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+    <rect x="28.5" y="54" width="7" height="5" rx="0.5" fill="var(--card)" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+    <rect x="44" y="54" width="7" height="5" rx="0.5" fill="var(--card)" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+    <path d="M8 28 L26 27 L27 49 L9 50 Z" fill="var(--card)" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    {% for y in [32, 36, 40, 44] %}
+    <line x1="10" y1="{{ y }}" x2="25" y2="{{ y - 0.3 }}" stroke="currentColor" stroke-width="0.55" stroke-opacity="0.28"/>
+    {% endfor %}
+    <path d="M22 10 L50 9 L51 49 L23 50 Z" fill="var(--card)" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M50 9 L54 10 L55 50 L51 49 Z" fill="var(--card)" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    {% for y in [16, 19.5, 23, 26.5, 30, 33.5, 37, 40.5, 44] %}
+    <line x1="25" y1="{{ y }}" x2="49" y2="{{ y - 0.3 }}" stroke="currentColor" stroke-width="0.55" stroke-opacity="0.28"/>
+    {% endfor %}
+  </svg>
+  {% else %}
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="12" y="12" width="40" height="40" rx="6" fill="currentColor" opacity="0.12" stroke="currentColor" stroke-width="1.5"/>
+    <path d="M24 32h16M32 24v16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+  {% endif %}
+</div>
+{% endmacro %}

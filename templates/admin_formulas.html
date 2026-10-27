@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block title %}Формулы · {{ product.title }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Формулы · {{ product.title }}</h1>
+  <a href="{{ url_for('admin_formulas') }}" class="btn-ghost">← Все продукты</a>
+</div>
+
+<form method="post" class="formula-edit-form">
+<p class="muted small">Числовые параметры формул правятся прямо здесь: впишите значение и нажмите «Сохранить».
+Правки пишутся в справочники и сразу применяются в калькуляторе.
+Параметры со ссылкой «Наценки» редактируются в разделе «Наценки по тиражам».</p>
+<button type="submit" class="btn-primary formula-save-top">Сохранить изменения</button>
+
+{% for block in docs.base_formulas %}
+<section class="card">
+  <h2>{{ block.title }}</h2>
+  <pre class="formula-block">{% for line in block.lines %}{{ line }}
+{% endfor %}</pre>
+  {% if block.params %}
+  <table class="data-table formula-params">
+    <thead><tr><th>Параметр</th><th>Значение</th></tr></thead>
+    <tbody>
+      {% for p in block.params %}
+      <tr>
+        <td>
+          {{ p.label }}
+          {% if p.extra %}<div class="muted small">{{ p.extra }}</div>{% endif %}
+        </td>
+        <td>
+          {% if p.key %}<input type="number" step="any" min="0" name="fp_{{ p.key }}" value="{{ p.value }}">{% endif %}
+          {% if p.link %}<span class="formula-value-text">{{ p.value }}</span>
+            <a href="{{ url_for('admin_markup') }}" class="btn-ghost small">Редактировать →</a>
+          {% elif not p.key %}{{ p.value }}{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</section>
+{% endfor %}
+
+{% if docs.size_examples %}
+<section class="card">
+  <h2>Числовой пример (базовый расчёт)</h2>
+  <p class="muted small">Первый материал, печать 4+0, минимальный тираж из таблицы наценок.</p>
+  {% for ex in docs.size_examples %}
+  <div class="formula-example">
+    <h3>{{ ex.size_name }} · {{ ex.material }}{% if ex.markup_profile %} · {{ ex.markup_profile }}{% endif %} · тираж {{ ex.qty }}{% if ex.per_sheet %} · {{ ex.per_sheet }} на листе{% endif %}</h3>
+    <table class="data-table">
+      <thead><tr><th>Компонент</th><th>Расчёт</th><th>₽/шт</th></tr></thead>
+      <tbody>
+        {% for step in ex.steps %}
+        <tr>
+          <td>{{ step.label }}</td>
+          <td class="formula-calc">{{ step.calc }}</td>
+          <td>{{ step.value }}</td>
+        </tr>
+        {% endfor %}
+        <tr class="formula-total">
+          <td colspan="2"><b>Себестоимость 1 шт</b></td>
+          <td><b>{{ ex.cost }}</b></td>
+        </tr>
+        <tr>
+          <td colspan="2">× наценка (тираж {{ ex.qty }})</td>
+          <td>× {{ ex.markup }}</td>
+        </tr>
+        <tr class="formula-total">
+          <td colspan="2"><b>Базовая цена 1 шт</b></td>
+          <td><b>{{ ex.base_price }}</b></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  {% endfor %}
+</section>
+{% endif %}
+
+{% if docs.options %}
+<section class="card">
+  <h2>Доп. опции</h2>
+  <p class="muted small">Формула, параметры и пример расчёта по каждому размеру. Наценку опции (×) тоже можно править.</p>
+  {% for opt in docs.options %}
+  {% if opt is mapping %}
+  <div class="formula-example">
+    <h3>{{ opt.name }}{% if opt.kind %} <span class="badge">{{ opt.kind }}</span>{% endif %}
+      {% if opt.factor is not none %}
+      <span class="formula-factor">× <input type="number" step="any" min="0"
+        {% if opt.price_factor_key %}name="fp_{{ opt.price_factor_key }}"{% else %}disabled{% endif %}
+        value="{{ opt.factor }}"></span>
+      {% endif %}
+    </h3>
+    {% if opt.lines %}
+    <pre class="formula-block">{% for line in opt.lines %}{{ line }}
+{% endfor %}</pre>
+    {% endif %}
+    {% if opt.params %}
+    <table class="data-table formula-params">
+      <thead><tr><th>Параметр</th><th>Значение</th></tr></thead>
+      <tbody>
+        {% for p in opt.params %}
+        <tr>
+          <td>
+            {{ p.label }}
+            {% if p.extra %}<div class="muted small">{{ p.extra }}</div>{% endif %}
+          </td>
+          <td>
+            {% if p.key %}<input type="number" step="any" min="0" name="fp_{{ p.key }}" value="{{ p.value }}">{% endif %}
+            {% if p.link %}<span class="formula-value-text">{{ p.value }}</span>
+              <a href="{{ url_for('admin_markup') }}" class="btn-ghost small">Редактировать →</a>
+            {% elif not p.key %}{{ p.value }}{% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+    {% if opt.examples %}
+    <table class="data-table">
+      <thead><tr><th>Размер</th><th>Расчёт cost_add</th><th>+ к себест.</th><th>+ к цене{% if opt.factor is not none %} (×{{ opt.factor }}){% endif %}</th></tr></thead>
+      <tbody>
+        {% for ex in opt.examples %}
+        <tr>
+          <td>{{ ex.size_name }}{% if ex.per_sheet %} ({{ ex.per_sheet }}/лист){% endif %}</td>
+          <td class="formula-calc">{{ ex.calc }}</td>
+          <td>{{ ex.cost_add }}</td>
+          <td>{{ ex.price_add }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+  </div>
+  {% else %}
+  <p class="muted">• {{ opt }}</p>
+  {% endif %}
+  {% endfor %}
+</section>
+{% endif %}
+
+<section class="card">
+  <h2>Справочно</h2>
+  <p><b>Режимы печати:</b> {% if docs.print_modes %}{{ docs.print_modes | join(', ') }}{% else %}не применимо{% endif %}</p>
+  <p><b>Скидки клиента:</b>
+    {% for d in docs.discounts %}{{ d.name }} ({{ d.percent }}%){% if not loop.last %}, {% endif %}{% endfor %}
+  </p>
+</section>
+
+<button type="submit" class="btn-primary">Сохранить изменения</button>
+</form>
+{% endblock %}

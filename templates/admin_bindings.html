@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Привязка материалов{% endblock %}
+
+{% block content %}
+
+<div class="page-head">
+
+  <h1>Привязка материалов к продуктам</h1>
+
+  <a href="{{ url_for('admin') }}" class="btn-ghost">← Назад в админку</a>
+
+</div>
+
+
+
+<form method="post">
+
+  <p class="muted small">Отметьте, какие материалы из общего каталога доступны в каждом калькуляторе. Профиль наценки определяет, какую таблицу множителей использовать (настраивается в «Наценки по тиражам»).</p>
+
+
+
+  <section class="preview-section">
+
+    {% for p in binding_products %}
+
+    <details class="card preview-panel">
+
+      <summary class="preview-summary">{{ p.title }}</summary>
+
+      <div class="preview-body">
+
+        <table class="data-table">
+
+          <thead>
+
+            <tr>
+
+              <th>В калькуляторе</th>
+
+              <th>Материал</th>
+
+              <th>Профиль наценки</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            {% for mat in catalog %}
+
+            {% set bound = p.bound.get(mat.id) %}
+
+            <tr>
+
+              <td>
+
+                <input type="checkbox" name="bind_{{ p.id }}_{{ mat.id }}" value="1"{% if bound %} checked{% endif %}>
+
+              </td>
+
+              <td>{{ mat.name }}</td>
+
+              <td>
+
+                <select name="profile_{{ p.id }}_{{ mat.id }}">
+
+                  {% for prof_id, prof_label in p.markup_profile_labels.items() %}
+
+                  <option value="{{ prof_id }}"{% if bound == prof_id %} selected{% elif not bound and loop.first %} selected{% endif %}>{{ prof_label }}</option>
+
+                  {% endfor %}
+
+                </select>
+
+              </td>
+
+            </tr>
+
+            {% endfor %}
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </details>
+
+    {% endfor %}
+
+  </section>
+
+
+
+  <button type="submit" class="btn-primary" style="margin-top:16px">Сохранить привязки</button>
+
+</form>
+
+{% endblock %}
+

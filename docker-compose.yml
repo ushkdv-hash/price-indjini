@@ -1,0 +1,29 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+
+    # Порт на машине : порт внутри контейнера.
+    # 8080 снаружи — приложение откроется по http://<адрес машины>:8080
+    # Для HTTPS на своём домене см. README, раздел «Домен и HTTPS».
+    ports:
+      - "8080:80"
+
+    # Постоянные данные: пользователи, история, статистика, новости.
+    # Именованный том переживает пересборку и перезапуск контейнера.
+    volumes:
+      - appdata:/data
+
+    environment:
+      DATA_DIR: /data
+      # 0 — работа по HTTP (cookie без флага Secure).
+      # 1 — только для HTTPS: включает Secure-cookie.
+      PRODUCTION: "0"
+      TZ: Europe/Moscow
+      # На тарифе 256 МБ памяти при нехватке поставьте 1.
+      WEB_WORKERS: "2"
+
+volumes:
+  appdata:

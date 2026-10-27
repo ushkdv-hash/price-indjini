@@ -1,0 +1,404 @@
+{% extends "base.html" %}
+{% from "_discount_field.html" import discount_field %}
+{% from "_quarterly_calendar_illus.html" import quarterly_calendar_preview %}
+{% from "_paper_bag_preview.html" import paper_bag_preview %}
+{% from "_calendar_nav.html" import calendar_nav %}
+{% from "_offset_nav.html" import offset_nav %}
+{% from "_papki_preview.html" import papki_preview %}
+{% block title %}Калькулятор · {{ product.title }}{% endblock %}
+{% block content %}
+{{ calendar_nav(calendar_hub, product_id) }}
+{{ offset_nav(offset_hub, product_id, papki_hub_ids) }}
+<div class="page-head">
+  <div>
+    <h1>Расчёт стоимости · <span class="accent">{{ product.title }}</span></h1>
+    {% if price_source_note %}
+    <p class="muted small">{{ price_source_note }}</p>
+    {% endif %}
+    {% if show_admin_details %}
+    <p class="muted">Себестоимость (материалы + работы) × наценка по тиражу + опции − скидка</p>
+    {% else %}
+    <p class="muted">Цена за штуку и итог за тираж с учётом опций и скидки</p>
+    {% endif %}
+  </div>
+  <a href="{{ url_for('calculator') }}" class="btn-ghost">← Все калькуляторы</a>
+</div>
+
+<div class="calc-grid{% if product.calc_type == 'quarterly_calendars' %} calc-grid--quarterly{% elif product.calc_type == 'paper_bags' %} calc-grid--paper-bags{% elif product.papki_group == 'papki' %} calc-grid--papki{% endif %}">
+  <section class="card form-card">
+    <h2>Параметры заказа</h2>
+    <div id="calc-form" class="calc-form">
+      {% if product.calc_type == 'board_cover' and product.board_mode_options %}
+      <div class="field">
+        <label>{{ product.board_mode_label | default('Вариант расчёта') }}</label>
+        <select id="f-board-mode">
+          {% for m in product.board_mode_options %}
+          <option value="{{ m.id }}">{{ m.label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% endif %}
+      <div class="field{% if product.hide_size_select %} hidden{% endif %}" id="field-size">
+        <label>{{ product.size_label | default('Размер') }}</label>
+        <select id="f-size"></select>
+        {% if product.calc_type == 'notebook' %}
+        <p id="notebook-cover-note" class="muted small"></p>
+        {% endif %}
+      </div>
+
+      {% if product.calc_type == 'notebook' %}
+      <div class="field notebook-spec">
+        <p class="muted small">Обложка: <b>{{ product.cover_material }}</b> · блок: <b>{{ product.block_spec }}</b></p>
+      </div>
+      {% elif product.calc_type == 'quarterly_calendars' %}
+      {% elif product.calc_type == 'wall_calendars' %}
+      {% elif product.calc_type == 'offset_table' %}
+      {% if product.papki_group == 'papki' and papki_hub %}
+      <div class="field" id="field-papki-kind">
+        <label>Вид папки</label>
+        <select id="f-papki-kind">
+          {% for pid, label in papki_hub %}
+          <option value="{{ pid }}"{% if pid == product_id %} selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% endif %}
+      <div class="field" id="field-material">
+        <label>Материал</label>
+        <select id="f-material"></select>
+      </div>
+      {% if product.illustration %}
+      <div class="field offset-illus">
+        <img src="{{ url_for('static', filename=product.illustration) }}" alt="" class="offset-illus-img">
+      </div>
+      {% endif %}
+      {% elif product.calc_type == 'pvd_bags' %}
+      {% if product.notes %}
+      <div class="field pvd-notes">
+        <ul class="muted small">
+          {% for note in product.notes %}
+          <li>{{ note }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+      <div class="field" id="field-material">
+        <label>Материал</label>
+        <select id="f-material">
+          {% for m in product.materials %}
+          <option value="{{ m.id }}">{{ m.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% elif product.calc_type == 'paper_bags' %}
+      {% if product.delivery and product.delivery.display %}
+      <div class="field">
+        <p class="muted small">{{ product.delivery.display }}</p>
+      </div>
+      {% endif %}
+      {% elif product.calc_type == 'board_cover' %}
+      <div class="field">
+        <label>{{ product.cover_count_label }}</label>
+        <select id="f-board-covers">
+          {% for n in product.board_cover_count_options %}
+          <option value="{{ n }}">{{ n }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label>{{ product.lamination_label }}</label>
+        <select id="f-board-lamination">
+          {% for l in product.laminations %}
+          <option value="{{ l.id }}">{{ l.label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <p class="muted small">{{ product.material_label }}</p>
+      </div>
+      {% if product.custom_size %}
+      <div id="field-board-custom" class="board-custom hidden">
+        <div class="field-row">
+          <div class="field">
+            <label for="f-board-width">{{ product.custom_size.width_label }}</label>
+            <input type="number" id="f-board-width" min="{{ product.custom_size.min_size | default(50) }}" max="4200" step="1" placeholder="300">
+          </div>
+          <div class="field">
+            <label for="f-board-height">{{ product.custom_size.height_label }}</label>
+            <input type="number" id="f-board-height" min="{{ product.custom_size.min_size | default(50) }}" max="4200" step="1" placeholder="420">
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-board-parts">{{ product.custom_size.parts_label }}</label>
+          <input type="number" id="f-board-parts" min="1" max="{{ product.custom_size.max_parts | default(10) }}" step="1" value="{{ product.custom_size.default_parts | default(1) }}">
+        </div>
+        <p class="muted small">{{ product.custom_size.note }}</p>
+        <p id="board-custom-hint" class="board-custom-hint hidden"></p>
+      </div>
+      {% endif %}
+      {% elif product.calc_type == 'sublimation' %}
+      <div class="field" id="field-material">
+        <label>Изделие</label>
+        <select id="f-material"></select>
+      </div>
+      {% else %}
+      <div class="field" id="field-material">
+        <label>{% if product.calc_type == 'branded_cups' %}Способ нанесения{% else %}Материал{% endif %}</label>
+        <select id="f-material"></select>
+        {% if product.calc_type == 'branded_cups' %}
+        <p id="branded-cups-note" class="muted small hidden"></p>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      <div id="custom-material-box" class="custom-material-box hidden">
+        <div class="field">
+          <label for="f-custom-price">Стоимость нестандартной бумаги, ₽</label>
+          <input type="number" id="f-custom-price" step="0.01" min="0.01" placeholder="0.00">
+          <p class="muted small">Укажите цену за лист формата <b>А3</b> — она подставится в формулу расчёта.</p>
+        </div>
+      </div>
+
+      <div class="field-row">
+        {% if product.calc_type == 'notebook' %}
+        <div class="field">
+          <label>Цветность блока</label>
+          <select id="f-block-mode">
+            {% for bm in product.block_modes %}
+            <option value="{{ bm }}">{{ bm }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        {% elif product.calc_type == 'branded_cups' %}
+        {% elif product.calc_type == 'sublimation' %}
+        {% elif product.calc_type == 'offset_table' %}
+        <div class="field">
+          <label>Цветность</label>
+          <select id="f-print">
+            {% for pm in product.print_modes %}
+            <option value="{{ pm }}">{{ product.print_mode_labels.get(pm, pm) }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        {% if product.lamination_modes %}
+        <div class="field" id="field-lamination-mode">
+          <label>Ламинация</label>
+          <select id="f-lamination-mode">
+            {% for lm in product.lamination_modes %}
+            <option value="{{ lm.id }}">{{ lm.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        {% endif %}
+        <div class="field" id="field-delivery">
+          <label>Срок изготовления</label>
+          <select id="f-delivery"></select>
+        </div>
+        {% elif product.calc_type == 'pvd_bags' %}
+        <div class="field">
+          <label>Цветность</label>
+          <select id="f-print">
+            {% for pm in product.print_modes %}
+            <option value="{{ pm }}">{{ product.print_mode_labels.get(pm, pm) }}</option>
+            {% endfor %}
+          </select>
+          <p id="pvd-print-note" class="muted small hidden">Печать 3+0 — цена по макету, уточняйте у менеджера.</p>
+        </div>
+        {% elif product.calc_type == 'paper_bags' %}
+        {% elif product.calc_type == 'board_cover' %}
+        {% elif product.calc_type == 'envelopes' %}
+        <div class="field">
+          <label>Печать</label>
+          <select id="f-print">
+            {% for pm in product.print_modes %}
+            <option value="{{ pm }}">{{ pm }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        {% elif product.calc_type == 'quarterly_calendars' or product.calc_type == 'wall_calendars' %}
+        {% if not product.hide_print_mode %}
+        <div class="field">
+          <label>{{ product.print_mode_label or 'Тип блока' }}</label>
+          <select id="f-print">
+            {% for pm in product.print_modes %}
+            <option value="{{ pm }}">{{ pm }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="field">
+          <label>Печать</label>
+          <select id="f-print">
+            {% for pm in product.print_modes %}
+            <option value="{{ pm }}">{{ pm }}</option>
+            {% endfor %}
+          </select>
+          <p id="print-mode-note" class="muted small hidden">Макет должен состоять из текста и штрихового рисунка без фона.</p>
+        </div>
+        {% endif %}
+        {% if product.calc_type == 'sublimation' %}
+        <div class="field">
+          <label for="f-qty">Тираж, шт</label>
+          <input type="number" id="f-qty" min="{{ product.qty_min | default(1) }}" max="{{ product.qty_max | default(1000) }}" step="1" value="{{ product.qty_min | default(1) }}">
+          <p class="muted small">Наценка зависит от диапазона: 1–10, 11–20, 21–50, 51–100, 101–1000 шт.</p>
+        </div>
+        {% else %}
+        <div class="field">
+          <label>Тираж, шт</label>
+          <select id="f-qty"></select>
+        </div>
+        {% endif %}
+      </div>
+
+      {% if product.calc_type == 'notebook' %}
+      <div class="field" id="field-page-count">
+        <label for="f-page-count">Количество страниц в блоке</label>
+        <select id="f-page-count">
+          {% for n in range(product.min_page_count | default(20), (product.max_page_count | default(90)) + 1, 10) %}
+          <option value="{{ n }}"{% if n == (product.default_page_count | default(40)) %} selected{% endif %}>{{ n }} л.</option>
+          {% endfor %}
+        </select>
+        <p class="muted small">Базовый блок — {{ product.default_page_count | default(40) }} листов. Другие значения — кратно 10 листам ({{ product.min_page_count | default(20) }}–{{ product.max_page_count | default(90) }}). Пересчёт от базы — по себестоимости с той же наценкой.</p>
+      </div>
+      {% endif %}
+
+      {% if product.calc_type == 'paper_bags' and product.mandatory_options %}
+      <fieldset class="field paper-bag-options">
+        <legend>Комплектация заказа</legend>
+        {% for group in product.mandatory_options %}
+        <div class="field">
+          <label for="f-bag-{{ group.id }}">{{ group.label }}</label>
+          <select id="f-bag-{{ group.id }}" data-bag-option="{{ group.id }}">
+            {% for choice in group.choices %}
+            <option value="{{ choice.id }}">{{ choice.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        {% endfor %}
+      </fieldset>
+      {% endif %}
+
+      <div class="field" id="field-lamination">
+        <label>{{ product.finish_select_label or 'Ламинация' }}</label>
+        <select id="f-lamination"></select>
+      </div>
+      {% if product.calc_type == 'quarterly_calendars' and product.lamination_surfaces_options %}
+      <div class="field" id="field-lamination-surfaces">
+        <label>Количество поверхностей ламинации</label>
+        <select id="f-lamination-surfaces">
+          {% for s in product.lamination_surfaces_options %}
+          <option value="{{ s }}">{{ s }}</option>
+          {% endfor %}
+        </select>
+        <p class="muted small">Стоимость ламинации рассчитывается для выбранного количества поверхностей.</p>
+      </div>
+      {% endif %}
+
+      <div class="field" id="field-other-options">
+        <label>{{ product.options_label or 'Доп. опции' }}</label>
+        <div id="f-options" class="options-grid"></div>
+      </div>
+
+      {% if product.lanyard_option %}
+      <fieldset class="field beizhi-lanyard-field" id="field-beizhi-lanyard">
+        <legend class="beizhi-lanyard-legend">
+          <label class="opt-item beizhi-lanyard-toggle">
+            <input type="checkbox" id="f-lanyard-enabled">
+            <span>{{ product.lanyard_option.label or 'Лента для бейджа' }}</span>
+            <span class="opt-price" id="f-lanyard-price"></span>
+          </label>
+        </legend>
+        <div id="beizhi-lanyard-panel" class="beizhi-lanyard-panel hidden">
+          <p class="beizhi-lanyard-label small muted">Тип крепления</p>
+          <div class="lanyard-attachments radio-group radio-group--lanyard">
+            {% for att in product.lanyard_option.attachments %}
+            <label class="radio-option radio-option--image" for="f-lanyard-{{ att.id }}">
+              <input type="radio" name="lanyard-attachment" id="f-lanyard-{{ att.id }}" value="{{ att.id }}"{% if loop.first %} checked{% endif %}>
+              <span class="radio-option-visual lanyard-option-visual">
+                <img src="{{ url_for('static', filename='img/beizhi-lanyard-' ~ att.id ~ '.png') }}?v=5" alt="{{ att.name }}" loading="lazy" width="320" height="240">
+              </span>
+              <span class="radio-option-text">
+                <span class="radio-option-title">{{ att.name }}</span>
+              </span>
+            </label>
+            {% endfor %}
+          </div>
+          <div class="field beizhi-lanyard-color">
+            <label for="f-lanyard-color">Цвет ленты</label>
+            <select id="f-lanyard-color">
+              {% for c in product.lanyard_option.colors %}
+              <option value="{{ c.id }}">{{ c.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </fieldset>
+      {% endif %}
+
+      {{ discount_field(product) }}
+    </div>
+  </section>
+
+  {% if product.calc_type == 'quarterly_calendars' %}
+  <section class="card quarterly-preview-card">
+    {{ quarterly_calendar_preview() }}
+  </section>
+  {% elif product.calc_type == 'paper_bags' %}
+  <section class="card quarterly-preview-card paper-bag-preview-card">
+    {{ paper_bag_preview() }}
+  </section>
+  {% elif product.papki_group == 'papki' %}
+  <section class="card quarterly-preview-card papki-preview-card">
+    {{ papki_preview(product.papki_variant | default('0204')) }}
+  </section>
+  {% endif %}
+
+  <section class="card result-card">
+    <div class="result-head">
+      <h2>Результат</h2>
+      <button id="copy-btn" class="btn-ghost" type="button" disabled>Скопировать</button>
+    </div>
+    <div id="result-empty" class="result-empty muted">
+      Выберите параметры — расчёт обновится автоматически.
+    </div>
+    <div id="result" class="result hidden"></div>
+    <div id="result-actions" class="result-actions hidden">
+      <button id="save-btn" class="btn-primary" type="button" disabled>Сохранить расчёт</button>
+    </div>
+  </section>
+</div>
+
+<div id="save-modal" class="modal hidden" role="dialog" aria-labelledby="save-modal-title">
+  <div class="modal-backdrop" data-close-modal></div>
+  <div class="modal-box card">
+    <h2 id="save-modal-title">Сохранить расчёт</h2>
+    <p class="muted small">Укажите название — так просчёт будет найден в истории.</p>
+    <div class="field">
+      <label for="save-title">Название</label>
+      <input type="text" id="save-title" maxlength="120" placeholder="Например: Визитки для ООО Ромашка">
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn-ghost" data-close-modal>Отмена</button>
+      <button type="button" id="save-confirm-btn" class="btn-primary">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<div id="mount-lightbox" class="modal hidden" aria-hidden="true">
+  <div class="modal-backdrop"></div>
+  <div class="modal-box mount-lightbox-box">
+    <img src="" alt="">
+  </div>
+</div>
+
+<script id="product-data" type="application/json">{{ product | tojson }}</script>
+<script id="opts-by-size" type="application/json">{{ opts_by_size | tojson }}</script>
+<script id="calc-meta" type="application/json">{{ {"show_admin_details": show_admin_details, "product_id": product_id, "option_kinds": option_kinds | default({})} | tojson }}</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='discount-field.js') }}"></script>
+<script src="{{ url_for('static', filename='calc-result.js') }}?v=11"></script>
+<script src="{{ url_for('static', filename='calculator.js') }}?v=69"></script>
+{% endblock %}

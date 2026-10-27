@@ -1,0 +1,93 @@
+{
+  "title": "Дополнительная информация",
+  "subtitle": "Раскладка изделий на листе и стоимость дополнительных работ",
+  "presets": [
+    {
+      "id": "print_sra3",
+      "name": "Печать на SRA3",
+      "description": "Стандартная цифровая печать",
+      "sheet_w": 320,
+      "sheet_h": 450,
+      "margin_top": 4,
+      "margin_bottom": 4,
+      "margin_left": 4,
+      "margin_right": 4,
+      "default_item_w": 90,
+      "default_item_h": 50,
+      "default_cut_margin": 2
+    },
+    {
+      "id": "print_sra4",
+      "name": "Печать на SRA4",
+      "description": "Цифровая печать на половине SRA3",
+      "sheet_w": 320,
+      "sheet_h": 225,
+      "margin_top": 4,
+      "margin_bottom": 4,
+      "margin_left": 4,
+      "margin_right": 4,
+      "default_item_w": 90,
+      "default_item_h": 50,
+      "default_cut_margin": 2
+    },
+    {
+      "id": "plotter_sra3",
+      "name": "Плоттер на SRA3",
+      "description": "Плоттерная резка, лист 320×450 мм",
+      "sheet_w": 320,
+      "sheet_h": 450,
+      "margin_top": 40,
+      "margin_bottom": 40,
+      "margin_left": 20,
+      "margin_right": 20,
+      "default_item_w": 50,
+      "default_item_h": 50,
+      "default_cut_margin": 2
+    },
+    {
+      "id": "custom_sheet",
+      "name": "Свой размер листа",
+      "description": "Задайте размер листа и изделия",
+      "custom_sheet": true,
+      "sheet_w": 305,
+      "sheet_h": 430,
+      "margin_top": 5,
+      "margin_bottom": 5,
+      "margin_left": 5,
+      "margin_right": 5,
+      "default_item_w": 50,
+      "default_item_h": 50,
+      "default_cut_margin": 3
+    }
+  ],
+  "extra_works": [
+    {
+      "id": "sticker_paste",
+      "name": "Поклейка наклеек",
+      "rates": [
+        {"label": "УФ-ДТФ", "price": "7,5 ₽/шт"},
+        {
+          "label": "Обычные",
+          "price": "3 ₽/шт",
+          "hint": "Наклейки из бумажной самоклейки или плёнки — поклейка на поверхность изделия"
+        }
+      ]
+    },
+    {
+      "id": "box_pack",
+      "name": "Упаковка в коробки",
+      "description": "Сборка набора из нескольких отдельных позиций в одну коробку для заказчика — комплектация заказа, а не упаковка одного готового изделия",
+      "rates": [
+        {"label": "За единицу", "price": "9 ₽/шт"}
+      ]
+    },
+    {
+      "id": "split_runs",
+      "name": "Раскладка по тиражам",
+      "description": "Если общий тираж одинакового макета нужно разложить на несколько партий (разные заведения или филиалы)",
+      "rates": [
+        {"label": "За лист", "price": "0,5 ₽/лист"}
+      ]
+    }
+  ]
+}

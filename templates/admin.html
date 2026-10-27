@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}Админка{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Администрирование</h1>
+  <p class="muted">Исходные данные расчёта и сотрудники</p>
+</div>
+
+<div class="admin-tiles">
+  <a href="{{ url_for('admin_product') }}" class="tile">
+    <div class="tile-ic">📄</div>
+    <div><b>Материалы и печать</b><span>Общий каталог бумаг и стоимость печати</span></div>
+  </a>
+  <a href="{{ url_for('admin_options') }}" class="tile">
+    <div class="tile-ic">✨</div>
+    <div><b>Доп. опции</b><span>Плёнки (за лист), скругление, фольгирование</span></div>
+  </a>
+  <a href="{{ url_for('admin_works') }}" class="tile">
+    <div class="tile-ic">🛠️</div>
+    <div><b>Виды работ</b><span>Нормативы и стоимость операций</span></div>
+  </a>
+  <a href="{{ url_for('admin_markup') }}" class="tile">
+    <div class="tile-ic">📈</div>
+    <div><b>Наценки по тиражам</b><span>Профили наценки для каждого продукта</span></div>
+  </a>
+  <a href="{{ url_for('admin_bindings') }}" class="tile">
+    <div class="tile-ic">🔗</div>
+    <div><b>Привязка материалов</b><span>Какие бумаги в каком калькуляторе и с какой наценкой</span></div>
+  </a>
+  <a href="{{ url_for('admin_formulas') }}" class="tile">
+    <div class="tile-ic">∑</div>
+    <div><b>Формулы расчёта</b><span>Формулы продукции и опций с текущими значениями</span></div>
+  </a>
+  <a href="{{ url_for('admin_offset') }}" class="tile">
+    <div class="tile-ic">🖨</div>
+    <div><b>Офсет — прайсы</b><span>Какие позиции обновлены, какие ждут таблиц</span></div>
+  </a>
+  <a href="{{ url_for('admin_stats') }}" class="tile">
+    <div class="tile-ic">📊</div>
+    <div><b>Статистика</b><span>Входы, просчёты и сохранённые расчёты по сотрудникам</span></div>
+  </a>
+  <a href="{{ url_for('admin_news') }}" class="tile">
+    <div class="tile-ic">📢</div>
+    <div><b>Новости</b><span>Объявления об обновлениях прайса для сотрудников</span></div>
+  </a>
+</div>
+
+<section class="card">
+  <h2>Просмотр от лица сотрудника</h2>
+  <p class="muted small">Переключитесь в режим сотрудника, чтобы увидеть калькулятор и историю так же, как их видит обычный пользователь (без админки). Вернуться можно кнопкой в верхней полосе.</p>
+  <form method="post" action="{{ url_for('admin_view_as_employee') }}">
+    <button type="submit" class="btn-ghost">Просмотр как сотрудник</button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>Глобальные настройки</h2>
+  <form method="post" action="{{ url_for('admin_settings') }}" class="inline-form">
+    <label>Курс $ <input type="number" step="0.01" name="rate_usd" value="{{ settings.rate_usd }}"></label>
+    <label>Курс € <input type="number" step="0.01" name="rate_eur" value="{{ settings.rate_eur }}"></label>
+    <label>Стоимость часа, ₽ <input type="number" step="1" name="hour_cost" value="{{ settings.hour_cost }}"></label>
+    <button type="submit" class="btn-primary">Сохранить</button>
+  </form>
+  <p class="muted small">Курсы и стоимость часа используются при пересборке данных из Excel (build_data.py).</p>
+</section>
+
+<section class="card">
+  <h2>Заявки на регистрацию</h2>
+  {% if pending_users %}
+  <table class="data-table">
+    <thead><tr><th>Логин</th><th>Имя</th><th>Дата</th><th>Роль при одобрении</th><th>Действия</th></tr></thead>
+    <tbody>
+      {% for uname, u in pending_users.items() %}
+      <tr>
+        <td>{{ uname }}</td>
+        <td>{{ u.full_name }}</td>
+        <td class="muted small">{{ u.created or '—' }}</td>
+        <td>
+          <form method="post" action="{{ url_for('admin_user_approve', uname=uname) }}" class="row-form">
+            <select name="role">
+              <option value="employee">сотрудник</option>
+              <option value="admin">админ</option>
+            </select>
+            <button type="submit" class="btn-primary small">Одобрить</button>
+          </form>
+        </td>
+        <td>
+          <form method="post" action="{{ url_for('admin_user_reject', uname=uname) }}" onsubmit="return confirm('Отклонить заявку {{ uname }}?')">
+            <button type="submit" class="btn-danger small">Отклонить</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted">Нет ожидающих заявок.</p>
+  {% endif %}
+</section>
+
+<section class="card">
+  <h2>Сотрудники</h2>
+  <table class="data-table">
+    <thead><tr><th>Логин</th><th>Имя</th><th>Роль</th><th>Действия</th></tr></thead>
+    <tbody>
+      {% for uname, u in users.items() %}
+      <tr>
+        <td>{{ uname }}</td>
+        <td>{{ u.full_name }}</td>
+        <td>
+          {% if uname != user.username %}
+          <form method="post" action="{{ url_for('admin_user_role', uname=uname) }}" class="row-form">
+            <select name="role" onchange="this.form.submit()">
+              <option value="employee" {{ 'selected' if u.role=='employee' }}>сотрудник</option>
+              <option value="admin" {{ 'selected' if u.role=='admin' }}>админ</option>
+            </select>
+          </form>
+          {% else %}
+            <span class="badge">{{ 'админ' if u.role=='admin' else 'сотрудник' }}</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if uname != user.username %}
+          <form method="post" action="{{ url_for('admin_user_delete', uname=uname) }}" onsubmit="return confirm('Удалить пользователя {{ uname }}?')">
+            <button class="btn-danger small">Удалить</button>
+          </form>
+          {% else %}<span class="muted small">это вы</span>{% endif %}
+          <form method="post" action="{{ url_for('admin_user_reset_password', uname=uname) }}">
+            <button type="submit" class="btn-ghost small">Сбросить пароль</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Офсет — обновление прайсов{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Офсет — статус прайсов</h1>
+  <p class="muted">Эталонная дата реестра: <b>{{ registry.reference_date or 'не задана' }}</b></p>
+  <a href="{{ url_for('admin') }}" class="btn-ghost">← Админка</a>
+</div>
+
+<section class="card">
+  <p class="muted small">Обновление: пришлите таблицы — импорт через <code>python import_omega_prices.py --apply</code> (прайс Омега-Принт) или <code>python import_offset_prices.py</code> (прежние таблицы). После импорта укажите дату прайса, если она отличается.</p>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Позиция</th>
+        <th>Вкладка</th>
+        <th>Обновлено</th>
+        <th>Статус</th>
+        <th>Примечание</th>
+        <th>Управление</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr{% if row.disabled %} style="opacity:.55"{% endif %}>
+        <td>
+          {% if not row.disabled and row.status == 'ok' and row.id in products %}
+          <a href="{{ url_for('calculator_product', product_id=row.id) }}">{{ row.title }}</a>
+          {% else %}
+          {{ row.title }}
+          {% endif %}
+        </td>
+        <td>{{ row.tab or '—' }}</td>
+        <td>{{ row.price_table_updated or '—' }}</td>
+        <td>
+          {% if row.disabled %}<span class="badge" style="background:#7f8c8d">Отключён</span>
+          {% elif row.status == 'ok' %}<span class="badge">OK</span>
+          {% elif row.status == 'stale' %}<span class="badge" style="background:#c0392b">Устарел</span>
+          {% elif row.status == 'missing' %}<span class="badge" style="background:#e67e22">Нет калькулятора</span>
+          {% else %}<span class="badge" style="background:#95a5a6">{{ row.status }}</span>
+          {% endif %}
+        </td>
+        <td class="muted small">{{ row.note }}</td>
+        <td>
+          {% if row.id in products %}
+          <form method="post" action="{{ url_for('admin_offset_toggle') }}">
+            <input type="hidden" name="product_id" value="{{ row.id }}">
+            {% if row.disabled %}
+            <button type="submit" class="btn-primary small">Включить</button>
+            {% else %}
+            <button type="submit" class="btn-ghost small">Отключить</button>
+            {% endif %}
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="muted">Реестр пуст. Добавьте позиции в data/offset_registry.json</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

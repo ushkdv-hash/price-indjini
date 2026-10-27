@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Виды работ{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Виды работ</h1>
+  <a href="{{ url_for('admin') }}" class="btn-ghost">← Назад в админку</a>
+</div>
+
+<form method="post" class="card">
+  <p class="muted small">
+    Стоимость работы считается автоматически: <b>(стоимость часа {{ settings.hour_cost }} ₽ ÷ 60) ÷ норматив</b>.
+    Меняйте норматив (сколько единиц делается за минуту) — стоимость пересчитается при сохранении.
+  </p>
+  <table class="data-table">
+    <thead><tr><th>Работа</th><th>Норматив, шт/мин</th><th>Стоимость, ₽ (расчёт)</th></tr></thead>
+    <tbody>
+      {% for key, w in works.items() %}
+      <tr>
+        <td>{{ w.name }}</td>
+        <td><input type="number" step="0.01" name="norm_{{ key }}" value="{{ w.norm_per_min }}"></td>
+        <td>{{ '%.3f'|format(w.cost) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <button type="submit" class="btn-primary">Сохранить</button>
+</form>
+
+<form method="post" class="card add-block">
+  <input type="hidden" name="action" value="add_work">
+  <h2>Добавить вид работы</h2>
+  <p class="muted small">Новая работа сразу доступна при настройке доп. опций (ламинация, скругление и т.д.).</p>
+  <div class="add-form-grid">
+    <div class="field">
+      <label for="new_name">Название</label>
+      <input type="text" id="new_name" name="new_name" maxlength="120" required placeholder="Например: Биговка, шт">
+    </div>
+    <div class="field">
+      <label for="new_norm">Норматив, шт/мин</label>
+      <input type="number" id="new_norm" name="new_norm" step="0.01" min="0.01" required placeholder="10">
+    </div>
+  </div>
+  <button type="submit" class="btn-primary">Добавить работу</button>
+</form>
+{% endblock %}

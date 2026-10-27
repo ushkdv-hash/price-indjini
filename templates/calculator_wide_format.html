@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% from "_discount_field.html" import discount_field %}
+
+{% block title %}Калькулятор · {{ product.title }}{% endblock %}
+
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <h1>Расчёт стоимости · <span class="accent">{{ product.title }}</span></h1>
+    {% if price_source_note %}
+    <p class="muted small">{{ price_source_note }}</p>
+    {% endif %}
+    {% if show_admin_details %}
+    <p class="muted">Площадь × цена за м² + опции → ×{{ product.price_factor }} − скидка</p>
+    {% else %}
+    <p class="muted">Цена за штуку и итог за тираж с учётом скидки</p>
+    {% endif %}
+  </div>
+  <a href="{{ url_for('calculator') }}" class="btn-ghost">← Все калькуляторы</a>
+</div>
+
+<div class="calc-grid">
+  <section class="card form-card">
+    <h2>Параметры заказа</h2>
+    <div id="calc-form" class="calc-form">
+
+      <div class="field">
+        <label for="f-material">Материал</label>
+        <select id="f-material">
+          {% for m in product.materials %}
+          <option
+            value="{{ m.id }}"
+            data-category="{{ m.category }}"
+            data-base-resolution="{{ m.base_resolution }}"
+            data-variant-ids="{{ m.variant_ids | default({}) | tojson }}"
+            {% if m.lamination_key %}data-lamination-key="{{ m.lamination_key }}"{% endif %}
+          >{{ m.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="f-resolution">Разрешение печати</label>
+        <select id="f-resolution">
+          {% for dpi in product.resolutions %}
+          <option value="{{ dpi }}"{% if dpi == 540 %} selected{% endif %}>{{ dpi }} dpi</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Размер изделия, мм</label>
+        <div class="field-row" style="grid-template-columns: 1fr auto 1fr;">
+          <input type="number" id="f-width" min="1" step="1" placeholder="Ширина" value="1000">
+          <span class="muted">×</span>
+          <input type="number" id="f-height" min="1" step="1" placeholder="Высота" value="1000">
+        </div>
+        <p id="area-hint" class="muted small hidden"></p>
+      </div>
+
+      <div class="field">
+        <label for="f-qty">Количество, шт</label>
+        <input type="number" id="f-qty" min="1" step="1" value="1">
+      </div>
+
+      <div class="field field-checkbox">
+        <label class="checkbox-label" for="f-perimeter-cut">
+          <input type="checkbox" id="f-perimeter-cut">
+          <span>Порезка по периметру</span>
+        </label>
+      </div>
+
+      <div class="field hidden" id="lamination-field">
+        <label for="f-lamination">Ламинация</label>
+        <select id="f-lamination">
+          <option value="none">Без ламинации</option>
+          {% for opt in product.wide_options if opt.kind == 'lamination' %}
+          <option value="{{ opt.id }}" data-material-keys="{{ (opt.material_keys or []) | join(',') }}">{{ opt.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <fieldset class="field hidden" id="banner-options-field">
+        <legend>Опции для баннера / сетки</legend>
+        <div class="field field-checkbox">
+          <label class="checkbox-label" for="f-opt-rope">
+            <input type="checkbox" id="f-opt-rope" data-opt-id="rope">
+            <span>Установка троса</span>
+          </label>
+        </div>
+        <div class="field field-checkbox hidden" id="mesh-weld-field">
+          <label class="checkbox-label" for="f-opt-mesh-weld">
+            <input type="checkbox" id="f-opt-mesh-weld" data-opt-id="mesh_weld">
+            <span>Спайка сетки по периметру</span>
+          </label>
+        </div>
+        <div class="field field-checkbox">
+          <label class="checkbox-label" for="f-opt-eyelets">
+            <input type="checkbox" id="f-opt-eyelets" data-opt-id="eyelets">
+            <span>Установка люверсов</span>
+          </label>
+          <div id="eyelets-mode-wrap" class="eyelets-mode hidden">
+            <p class="eyelets-mode-label small muted">Способ установки</p>
+            <div class="radio-group radio-group--eyelets">
+              <label class="radio-option" for="f-eyelet-corners">
+                <input type="radio" name="eyelet-mode" id="f-eyelet-corners" value="corners" checked>
+                <span class="radio-option-text">
+                  <span class="radio-option-title">По углам</span>
+                  <span class="radio-option-note muted">4 шт на изделие</span>
+                </span>
+              </label>
+              <label class="radio-option" for="f-eyelet-perimeter">
+                <input type="radio" name="eyelet-mode" id="f-eyelet-perimeter" value="perimeter">
+                <span class="radio-option-text">
+                  <span class="radio-option-title">По периметру</span>
+                  <span class="radio-option-note muted">каждые 30 см</span>
+                </span>
+              </label>
+            </div>
+            <p id="eyelets-hint" class="eyelets-mode-hint muted small"></p>
+          </div>
+        </div>
+      </fieldset>
+
+      {{ discount_field(product) }}
+    </div>
+  </section>
+
+  <section class="card result-card">
+    <div class="result-head">
+      <h2>Результат</h2>
+      <button id="copy-btn" class="btn-ghost" type="button" disabled>Скопировать</button>
+    </div>
+    <div id="result-empty" class="result-empty muted">
+      Укажите материал, размер в мм и количество — расчёт обновится автоматически.
+    </div>
+    <div id="result" class="result hidden"></div>
+    <div id="result-actions" class="result-actions hidden">
+      <button id="save-btn" class="btn-primary" type="button" disabled>Сохранить расчёт</button>
+    </div>
+  </section>
+</div>
+
+<div id="save-modal" class="modal hidden" role="dialog" aria-labelledby="save-modal-title">
+  <div class="modal-backdrop" data-close-modal></div>
+  <div class="modal-box card">
+    <h2 id="save-modal-title">Сохранить расчёт</h2>
+    <p class="muted small">Укажите название — так просчёт будет найден в истории.</p>
+    <div class="field">
+      <label for="save-title">Название</label>
+      <input type="text" id="save-title" maxlength="120" placeholder="Например: Баннер 1×1 м для витрины">
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn-ghost" data-close-modal>Отмена</button>
+      <button type="button" id="save-confirm-btn" class="btn-primary">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<script id="product-data" type="application/json">{{ product | tojson }}</script>
+<script id="calc-meta" type="application/json">{{ {"show_admin_details": show_admin_details, "product_id": product_id} | tojson }}</script>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='discount-field.js') }}"></script>
+<script src="{{ url_for('static', filename='calc-result.js') }}?v=4"></script>
+<script src="{{ url_for('static', filename='wide-format-calculator.js') }}?v=8"></script>
+{% endblock %}
