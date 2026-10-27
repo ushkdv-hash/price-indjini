@@ -1,0 +1,81 @@
+{
+  "admin": {
+    "password": "scrypt:32768:8:1$SG5WGMwpB33qKNWZ$a25e130042590f42c748054f4b89b4a336cdd475d447b95c3e2bcbb1fd3b6af8161f4cd52def606ac5ade373a2ca017331b6d1e44df59b7f1e33bce0f7c54311",
+    "role": "admin",
+    "full_name": "Администратор",
+    "created": "2026-06-26T20:04:24",
+    "status": "approved"
+  },
+  "Дмитрий": {
+    "password": "scrypt:32768:8:1$KZfaCxEGLzXahjKp$2ccafb6e7478c929c7e9ae6807f4f143e83c0bfd3477c5ba8e5bae20c3974c8cebe5c96e438eb2205c7bd98ad3d47dc3829f3655fda21da8c0499687d19a7181",
+    "role": "employee",
+    "full_name": "Дмитрий",
+    "status": "approved",
+    "created": "2026-08-04T06:56:27",
+    "approved_at": "2026-08-04T06:56:53"
+  },
+  "pr123": {
+    "password": "scrypt:32768:8:1$Tvlwi0LJ9Ic5BXEn$be5d632f605d5379fc23348cc4e30a900e5dbb372c7df4d95cbaef90e9dcc8b89bd40572c965b1665324e728a01ee6f3dd678343986e705042abc8a423987e27",
+    "role": "employee",
+    "full_name": "Куянцева Ирина",
+    "status": "approved",
+    "created": "2026-08-04T08:09:40",
+    "approved_at": "2026-08-04T08:09:44"
+  },
+  "Olala_10": {
+    "password": "scrypt:32768:8:1$jeE2tsL8yRoEC7oV$8d20edab8013776b19a6cf2ae2b4442e7a6af71cc098bc4aae29456c7354eecd8a644b10670b08051bc1259a6ca030d18c42c1668fc23b3e765a44a1451a34fb",
+    "role": "employee",
+    "full_name": "Гриценко Ольга Олеговна",
+    "status": "approved",
+    "created": "2026-08-04T14:07:58",
+    "approved_at": "2026-08-04T14:08:48"
+  },
+  "Lkrylova": {
+    "password": "scrypt:32768:8:1$vEeotYOzTXSO7ENk$68894bf5787991f3d2d373909d44d2762fe04dc541352c16b4dd53340eb6fa7a7e7123a7b3a6ca8db8a16d7cf38408342cd171a9db6b4428f40e11d5c531b971",
+    "role": "employee",
+    "full_name": "Крылова Людмила",
+    "status": "approved",
+    "created": "2026-08-12T09:55:46",
+    "approved_at": "2026-08-12T09:57:11"
+  },
+  "Gorohova": {
+    "password": "scrypt:32768:8:1$DxJE10v4fwLQ3XE5$58b1a7936d8effd90cb2d7fde92497520c666d7a603cbb2128d09af200b52e129e57ffa6a46c2acdea7f256e880c1bfaa51f50e8b914edbea4f093c0e45af39b",
+    "role": "employee",
+    "full_name": "Горохова Надежда",
+    "status": "approved",
+    "created": "2026-10-20T12:39:17",
+    "approved_at": "2026-10-20T12:40:27"
+  },
+  "Indjini.21": {
+    "password": "scrypt:32768:8:1$2Q4wT5dXULuIMBmY$3396ceafb83d4ffbdf526d074a469d19d20c8fee6e8de3f7c244abb36f7a7babf649bd28fffb8efd1871c578c9a6838641d1f9fa958f846a5396a28d3299e331",
+    "role": "employee",
+    "full_name": "Карина Форопонова",
+    "status": "approved",
+    "created": "2026-10-20T12:46:38",
+    "approved_at": "2026-10-20T12:55:46"
+  },
+  "admin": {
+    "password": "scrypt:32768:8:1$hIofq255tXgAFei7$e226d88c32e9a20e3b7608130d40907c1d038e30a44fb9e2bc60f7f9fb3e2cc2f7f966366b06f888c24a702713d5d92f4df488e3e7390b3eeb82b77a5e5a693a",
+    "role": "admin",
+    "full_name": "Администратор",
+    "status": "approved",
+    "created": "2026-10-26T17:19:45",
+    "approved_at": "2026-10-26T17:19:45"
+  },
+  "user1": {
+    "password": "scrypt:32768:8:1$5Oix1b9eLffFpGUw$0e47ff971c153282569a9bd5654bc2dd5f2a1c616e1ffc9280215cba7c22a28d286c48496f8653d19c45ea24de46919bd2fd97be2423437fbd428c18253e5ffe",
+    "role": "employee",
+    "full_name": "Сотрудник 1",
+    "status": "approved",
+    "created": "2026-10-26T17:19:45",
+    "approved_at": "2026-10-26T17:19:45"
+  },
+  "user2": {
+    "password": "scrypt:32768:8:1$zQRPicbrPdnQ8ZLx$527edc0f5fbe3a29f48971d8edf78274c0bf133f37dc4a1fa8f6902a206b3b1f0cbddb7d232889966491a083a72801ab837195ab4e340137fbc7fa39579d545d",
+    "role": "employee",
+    "full_name": "Сотрудник 2",
+    "status": "approved",
+    "created": "2026-10-26T17:19:45",
+    "approved_at": "2026-10-26T17:19:45"
+  }
+}
